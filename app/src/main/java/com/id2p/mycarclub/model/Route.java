@@ -30,4 +30,8 @@ public class Route extends ParseObject {
         return getParseGeoPoint("geopoint");
     }
 
+    @Override
+    public String toString() {
+        return getAddress();
+    }
 }

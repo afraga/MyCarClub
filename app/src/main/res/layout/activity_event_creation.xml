@@ -5,38 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
     <!-- The main content view -->
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.id2p.mycarclub.view.ProfileActivity">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/header"
+            android:id="@+id/detailsLayout"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="?attr/colorPrimaryDark"
-            android:padding="12dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark"
-            android:orientation="vertical"
-            android:layout_centerHorizontal="true"
-            android:gravity="center_horizontal">
-
-            <com.parse.ParseImageView
-                android:id="@+id/user_image"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/com_facebook_profile_picture_blank_square"
-                android:visibility="visible"
-                android:layout_marginBottom="10dp"/>
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp"
-            android:layout_below="@+id/header">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -66,17 +46,60 @@
                         android:layout_height="wrap_content"/>
                 </TableRow>
                 <TableRow>
-                    <DatePicker
+                    <EditText
                         android:id="@+id/eventDate"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:hint="Date"/>
+                </TableRow>
+                <TableRow>
+                    <EditText
+                        android:id="@+id/eventTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:editable="false"
+                        android:hint="Time"/>
+                </TableRow>
+
+                <TableRow>
+                    <AutoCompleteTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/addressText"
+                        android:hint="Enter Address..."/>
+                </TableRow>
+
+                <TableRow>
+                    <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/addWaypoint"
+                        android:clickable="true"
+                        android:src="@drawable/com_facebook_button_like_icon_selected"/>
+                </TableRow>
+                <TableRow>
+                    <ImageButton
+                        android:layout_width="50dip"
+                        android:layout_height="50dip"
+                        android:id="@+id/removeWaypoint"
+                        android:clickable="true"
+                        android:src="@drawable/abc_ic_clear_mtrl_alpha"/>
+                </TableRow>
+
+                <TableRow>
+                    <ListView
+                        android:layout_width="match_parent"
+                        android:layout_height="fill_parent"
+                        android:textColor="@color/abc_primary_text_disable_only_material_light"
+                        android:id="@+id/routeList"/>
                 </TableRow>
 
             </TableLayout>
 
         </LinearLayout>
 
-    </RelativeLayout>
+    </ScrollView>
 
     <!-- Side navigation drawer UI -->
     <ListView
