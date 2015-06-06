@@ -10,6 +10,8 @@ import com.parse.ParseObject;
 @ParseClassName("Route")
 public class Route extends ParseObject {
 
+    private double distanceInKm = -1;
+
     public Route() {
 
     }
@@ -28,6 +30,14 @@ public class Route extends ParseObject {
 
     public ParseGeoPoint getGeoPoint() {
         return getParseGeoPoint("geopoint");
+    }
+
+    public void setDistanceInKm(double distance) {
+        distanceInKm = distance;
+    }
+
+    public double getDistanceInKm() {
+        return distanceInKm;
     }
 
     @Override

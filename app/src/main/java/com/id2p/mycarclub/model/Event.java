@@ -33,12 +33,12 @@ public class Event extends ParseObject {
         return getString("description");
     }
 
-    public void setOrganizer(ParseUser organizer) {
+    public void setOrganizer(User organizer) {
         put("organizer", organizer);
     }
 
-    public ParseUser getOrganizer() {
-        return getParseUser("organizer");
+    public User getOrganizer() {
+        return (User) get("organizer");
     }
 
     public void setRoute(List<Route> route) {

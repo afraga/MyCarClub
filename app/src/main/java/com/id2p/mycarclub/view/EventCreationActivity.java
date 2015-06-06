@@ -40,6 +40,7 @@ import com.parse.ui.ParseLoginBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -126,16 +127,24 @@ public class EventCreationActivity extends BaseDrawerActivity
                         calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
                 break;
             case R.id.addWaypoint:
-                System.out.println("ADD WAYPOINT CLICKED for: " + lastClickedLocation.getAddress());
-                if (!parseGeoPointList.contains(lastClickedLocation)) {
-                    parseGeoPointList.add(lastClickedLocation);
-                    parseGeoPointListAdapter.notifyDataSetChanged();
-                }
+                addNewRouteToList();
                 break;
             case R.id.removeWaypoint:
                 System.out.println("REMOVE WAYPOINT CLICKED");
                 break;
         }
+    }
+
+    private boolean addNewRouteToList() {
+        Log.i(LOG_TAG, "Asking to add New Route: " + lastClickedLocation.getAddress() + " with distance: " + lastClickedLocation.getDistanceInKm());
+        if (!parseGeoPointList.contains(lastClickedLocation) && (lastClickedLocation.getDistanceInKm() > 0 || lastClickedLocation.getDistanceInKm() == -1)) {
+            Log.i(LOG_TAG, "New Route Added: " + lastClickedLocation.getAddress());
+            parseGeoPointList.add(lastClickedLocation);
+            parseGeoPointListAdapter.notifyDataSetChanged();
+            addressText.setText("");
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -208,22 +217,22 @@ public class EventCreationActivity extends BaseDrawerActivity
         String[] chapterArray = { "Ottawa", "Montreal", "Toronto" };
         ArrayAdapter mAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, chapterArray);
         eventChapterSpinner.setAdapter(mAdapter);
+        // TODO: make sure initial selected chapter is the User's chapter
     }
 
     public void onItemClick(AdapterView adapterView, View view, int position, long id) {
         final PlaceArrayAdapter.PlaceAutocomplete item = placeArrayAdapter.getItem(position);
         final String placeId = String.valueOf(item.placeId);
         Log.i(LOG_TAG, "Selected: " + item.description);
-        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                .getPlaceById(googleApiClient, placeId);
+        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
         placeResult.setResultCallback(updatePlaceDetailsCallback);
         Log.i(LOG_TAG, "Fetching details for ID: " + item.placeId);
-
     }
 
     private ResultCallback<PlaceBuffer> updatePlaceDetailsCallback = new ResultCallback<PlaceBuffer>() {
         @Override
         public void onResult(PlaceBuffer places) {
+            Route previousLocation = null;
             if (!places.getStatus().isSuccess()) {
                 Log.e(LOG_TAG, "Place query did not complete. Error: " +
                         places.getStatus().toString());
@@ -231,13 +240,20 @@ public class EventCreationActivity extends BaseDrawerActivity
             }
             // Selecting the first object buffer.
             final Place place = places.get(0);
+            ParseGeoPoint newGeoPoint = new ParseGeoPoint(place.getLatLng().latitude, place.getLatLng().longitude);
 
-            Log.i(LOG_TAG, place.getAddress() + " - Latitude: " + place.getLatLng().latitude + " Longitude: " + place.getLatLng().longitude);
-            System.out.println(place.getAddress() + " - Latitude: " + place.getLatLng().latitude + " Longitude: " + place.getLatLng().longitude);
+            if (lastClickedLocation.getGeoPoint() != null) {
+                previousLocation = lastClickedLocation;
+                lastClickedLocation = new Route();
+                double distanceInKm = previousLocation.getGeoPoint().distanceInKilometersTo(newGeoPoint);
+//                lastClickedLocation.setAddress(place.getAddress().toString() + " (" + Math.floor(distanceInKm) + " km)");
+                lastClickedLocation.setDistanceInKm(distanceInKm);
+                lastClickedLocation.setAddress(place.getAddress().toString());
+            } else {
+                lastClickedLocation.setAddress(place.getAddress().toString());
+            }
 
-            lastClickedLocation.setAddress(place.getAddress().toString());
-            lastClickedLocation.setGeoPoint(new ParseGeoPoint(place.getLatLng().latitude, place.getLatLng().longitude));
-
+            lastClickedLocation.setGeoPoint(newGeoPoint);
             addressText.setText(Html.fromHtml(place.getAddress().toString()));
         }
     };
@@ -281,11 +297,63 @@ public class EventCreationActivity extends BaseDrawerActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_save) {
+            saveEventData();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveEventData() {
+
+        String eventName = eventNameText.getText().toString();
+        if (eventName.length() > 0) {
+            currentEvent.setName(eventName);
+        } else {
+            Toast.makeText(EventCreationActivity.this, "Please enter a Name for the Event!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String eventDescription = eventDescriptionText.getText().toString();
+        if (eventDescription.length() > 0) {
+            currentEvent.setDescription(eventDescription);
+        } else {
+            Toast.makeText(EventCreationActivity.this, "Please enter a Description for the Event!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String eventChapter = eventChapterSpinner.getSelectedItem().toString();
+        if (eventChapter.length() > 0) {
+            currentEvent.setChapter(eventChapter);
+        } else {
+            Toast.makeText(EventCreationActivity.this, "Please select the Chapter of the Event!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (eventDate.getText().length() > 0 && eventTime.getText().length() > 0) {
+            currentEvent.setDate(calendar.getTime());
+        } else {
+            Toast.makeText(EventCreationActivity.this, "Please set the Date and Time of the Event!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (parseGeoPointList.size() > 0) {
+            currentEvent.setRoute(parseGeoPointList);
+        } else {
+            Toast.makeText(EventCreationActivity.this, "Please add at least one Location for the Event!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (currentUser != null) {
+            currentEvent.setOrganizer(currentUser);
+        } else {
+            Toast.makeText(EventCreationActivity.this, "You must be logged in to create an Event!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        try {
+            currentEvent.save(); // TODO: change to saveInBackground() later
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        finish();
     }
 
 }

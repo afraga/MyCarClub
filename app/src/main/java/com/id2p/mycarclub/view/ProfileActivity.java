@@ -221,7 +221,7 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
             currentUser.setParseUser(parseUser);
 
         try {
-            currentUser.save();
+            currentUser.save(); // TODO: change to saveInBackground() later
         } catch (ParseException e) {
             e.printStackTrace();
         }
