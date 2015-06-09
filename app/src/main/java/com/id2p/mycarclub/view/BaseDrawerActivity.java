@@ -77,6 +77,9 @@ public class BaseDrawerActivity extends ActionBarActivity {
                         break;
                     case 6:
                         Toast.makeText(BaseDrawerActivity.this, "Market Place", Toast.LENGTH_SHORT).show();
+                        Intent adIntent = new Intent(getApplicationContext(), AdCreationActivity.class);
+                        startActivity(adIntent);
+                        finish();
                         break;
                     case 7:
                         Toast.makeText(BaseDrawerActivity.this, "Logout", Toast.LENGTH_SHORT).show();

@@ -2,6 +2,7 @@ package com.id2p.mycarclub;
 
 import android.app.Application;
 
+import com.id2p.mycarclub.model.Ad;
 import com.id2p.mycarclub.model.Event;
 import com.id2p.mycarclub.model.EventRegistration;
 import com.id2p.mycarclub.model.Route;
@@ -25,6 +26,7 @@ public class MyCarClubApplication extends Application {
         ParseObject.registerSubclass(Event.class);
         ParseObject.registerSubclass(EventRegistration.class);
         ParseObject.registerSubclass(Route.class);
+        ParseObject.registerSubclass(Ad.class);
 
         // Enable Local Datastore
         Parse.enableLocalDatastore(this);

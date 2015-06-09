@@ -67,7 +67,7 @@ public class EventCreationActivity extends BaseDrawerActivity
     private static final int GOOGLE_API_CLIENT_ID = 0;
     private GoogleApiClient googleApiClient = null;
     private PlaceArrayAdapter placeArrayAdapter = null;
-    private static final LatLngBounds BOUNDS_MOUNTAIN_VIEW = new LatLngBounds(
+    private static final LatLngBounds BOUNDS_NORTH_AMERICA = new LatLngBounds(
             new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
     private static final String LOG_TAG = "EventCreationActivity";
 
@@ -172,7 +172,7 @@ public class EventCreationActivity extends BaseDrawerActivity
             routeList = (ListView) findViewById(R.id.routeList);
 
             // set data adapters
-            placeArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_MOUNTAIN_VIEW, null);
+            placeArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_NORTH_AMERICA, null);
             addressText.setAdapter(placeArrayAdapter);
 
             parseGeoPointListAdapter = new ArrayAdapter<Route>(getApplicationContext(), android.R.layout.simple_list_item_1, parseGeoPointList);
