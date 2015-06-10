@@ -65,6 +65,9 @@ public class BaseDrawerActivity extends ActionBarActivity {
                         break;
                     case 3:
                         Toast.makeText(BaseDrawerActivity.this, "Garage", Toast.LENGTH_SHORT).show();
+                        Intent garageIntent = new Intent(getApplicationContext(), GarageCreationActivity.class);
+                        startActivity(garageIntent);
+                        finish(); // TODO: should I finish it or keep it open, lookup best practices on android
                         break;
                     case 4:
                         Toast.makeText(BaseDrawerActivity.this, "Events", Toast.LENGTH_SHORT).show();
