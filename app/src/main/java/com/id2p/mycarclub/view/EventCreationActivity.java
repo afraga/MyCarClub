@@ -158,7 +158,6 @@ public class EventCreationActivity extends BaseDrawerActivity
             startActivityForResult(builder.build(), 0);
         } else {
             setContentView(R.layout.activity_event_creation);
-            super.onCreateDrawer();
 
             // init UI elements
             eventNameText = (EditText) findViewById(R.id.eventName);
@@ -210,6 +209,7 @@ public class EventCreationActivity extends BaseDrawerActivity
             // load list of chapters
             loadChapters();
 
+            super.onCreateDrawer(currentUser);
         }
     }
 

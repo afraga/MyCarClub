@@ -92,7 +92,6 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
             startActivityForResult(builder.build(), 0);
         } else {
             setContentView(R.layout.activity_ad_creation);
-            super.onCreateDrawer();
 
             googleApiClient = new GoogleApiClient.Builder(AdCreationActivity.this)
                     .addApi(Places.GEO_DATA_API)
@@ -147,6 +146,8 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
 
             adThumbnailList = new ArrayList<ParseFile>();
             adImageList = new ArrayList<ParseFile>();
+
+            super.onCreateDrawer(currentUser);
         }
     }
 

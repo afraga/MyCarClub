@@ -66,7 +66,6 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
             currentUser = new User();
         } else {
             setContentView(R.layout.activity_profile);
-            super.onCreateDrawer();
 
             // init UI elements
             userImage = (ParseImageView) findViewById(R.id.user_image);
@@ -99,6 +98,8 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
 
             // load user data into fields
             loadUserData();
+
+            super.onCreateDrawer(currentUser);
         }
     }
 

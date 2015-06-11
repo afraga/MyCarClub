@@ -67,7 +67,6 @@ public class GarageCreationActivity extends BaseDrawerActivity {
             startActivityForResult(builder.build(), 0);
         } else {
             setContentView(R.layout.activity_garage_creation);
-            super.onCreateDrawer();
 
             carMakeEditText = (EditText) findViewById(R.id.carMake);
             carModelEditText = (EditText) findViewById(R.id.carModel);
@@ -106,6 +105,8 @@ public class GarageCreationActivity extends BaseDrawerActivity {
 
             thumbnailList = new ArrayList<ParseFile>();
             imageList = new ArrayList<ParseFile>();
+
+            super.onCreateDrawer(currentUser);
         }
     }
 

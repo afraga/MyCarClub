@@ -6,15 +6,21 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.id2p.mycarclub.R;
+import com.id2p.mycarclub.model.User;
+import com.parse.GetDataCallback;
+import com.parse.ParseException;
+import com.parse.ParseImageView;
 import com.parse.ParseUser;
 
 
@@ -25,18 +31,34 @@ public class BaseDrawerActivity extends ActionBarActivity {
     private DrawerLayout mDrawerLayout;
     private ArrayAdapter<String> mAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ParseImageView mUserPicture;
+    private TextView mUserName;
     private String mActivityTitle;
 
-    protected void onCreateDrawer() {
+    protected void onCreateDrawer(User loggedUser) {
         mDrawerHeader = getLayoutInflater().inflate(R.layout.basedrawer_header, null);
         mDrawerList = (ListView)findViewById(R.id.navList);
         mDrawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         mActivityTitle = getTitle().toString();
+        mUserName = (TextView) mDrawerHeader.findViewById(R.id.user_name);
+        mUserPicture = (ParseImageView) mDrawerHeader.findViewById(R.id.user_image);
 
         mDrawerList.addHeaderView(mDrawerHeader, null, false);
 
         addDrawerItems();
         setupDrawer();
+
+        if (loggedUser != null) {
+            String userName = loggedUser.getFirstName() + " " + loggedUser.getLastName();
+            mUserName.setText(userName);
+            mUserPicture.setParseFile(loggedUser.getPicture());
+            mUserPicture.loadInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    mUserPicture.setVisibility(View.VISIBLE);
+                }
+            });
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -55,25 +77,21 @@ public class BaseDrawerActivity extends ActionBarActivity {
                         Toast.makeText(BaseDrawerActivity.this, "Home", Toast.LENGTH_SHORT).show();
                         Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
                         startActivity(homeIntent);
-                        finish(); // TODO: should I finish it or keep it open, lookup best practices on android
                         break;
                     case 2:
                         Toast.makeText(BaseDrawerActivity.this, "Profile", Toast.LENGTH_SHORT).show();
                         Intent profileIntent = new Intent(getApplicationContext(), ProfileActivity.class);
                         startActivity(profileIntent);
-                        finish(); // TODO: should I finish it or keep it open, lookup best practices on android
                         break;
                     case 3:
                         Toast.makeText(BaseDrawerActivity.this, "Garage", Toast.LENGTH_SHORT).show();
                         Intent garageIntent = new Intent(getApplicationContext(), GarageCreationActivity.class);
                         startActivity(garageIntent);
-                        finish(); // TODO: should I finish it or keep it open, lookup best practices on android
                         break;
                     case 4:
                         Toast.makeText(BaseDrawerActivity.this, "Events", Toast.LENGTH_SHORT).show();
                         Intent eventIntent = new Intent(getApplicationContext(), EventCreationActivity.class);
                         startActivity(eventIntent);
-                        finish(); // TODO: should I finish it or keep it open, lookup best practices on android
                         break;
                     case 5:
                         Toast.makeText(BaseDrawerActivity.this, "Friends", Toast.LENGTH_SHORT).show();
@@ -82,7 +100,6 @@ public class BaseDrawerActivity extends ActionBarActivity {
                         Toast.makeText(BaseDrawerActivity.this, "Market Place", Toast.LENGTH_SHORT).show();
                         Intent adIntent = new Intent(getApplicationContext(), AdCreationActivity.class);
                         startActivity(adIntent);
-                        finish();
                         break;
                     case 7:
                         Toast.makeText(BaseDrawerActivity.this, "Logout", Toast.LENGTH_SHORT).show();
