@@ -27,6 +27,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.google.android.gms:play-services:7.5.0'
     compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:recyclerview-v7:21.0.3'
+    compile 'com.android.support:cardview-v7:21.0.3'
     compile project(':ParseLoginUI')
     compile files('libs/Parse-1.9.1.jar')
     compile files('libs/ParseFacebookUtilsV4-1.9.1.jar')

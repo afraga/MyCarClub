@@ -80,18 +80,7 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
             removePicture.setOnClickListener(this);
 
             // load our logged in user
-            ParseQuery<User> query = new ParseQuery<User>("User");
-            query.whereEqualTo("parseUser", parseUser);
-            try {
-                List<User> userList = query.find();
-                if (userList != null && userList.size() > 0)
-                    currentUser = userList.get(0);
-                else
-                    currentUser = new User();
-            } catch (ParseException e) {
-                Toast.makeText(ProfileActivity.this, "Error getting user information!", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
+            currentUser = getLoggedUser();
 
             // load list of chapters
             loadChapters();
@@ -101,6 +90,20 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
 
             super.onCreateDrawer(currentUser);
         }
+    }
+
+    private User getLoggedUser() {
+        User user = null;
+        try {
+            user = User.getUser(parseUser);
+            if (user == null)
+                user = new User();
+        } catch (ParseException e) {
+            Toast.makeText(ProfileActivity.this, "Error getting user information!", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+
+        return user;
     }
 
     @Override

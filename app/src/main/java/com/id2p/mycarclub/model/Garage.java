@@ -1,8 +1,10 @@
 package com.id2p.mycarclub.model;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
 import java.util.List;
 
@@ -70,6 +72,13 @@ public class Garage extends ParseObject {
 
     public List<ParseFile> getCarImages() {
         return (List<ParseFile>) get("images");
+    }
+
+    public static List<Garage> getUserGarage(User user) throws ParseException {
+        ParseQuery<Garage> query = new ParseQuery<Garage>("Garage");
+        query.whereEqualTo("owner", user);
+        List<Garage> garageList = query.find();
+        return garageList;
     }
 
 }

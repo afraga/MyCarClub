@@ -1,9 +1,15 @@
 package com.id2p.mycarclub.model;
 
+import android.widget.Toast;
+
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 @ParseClassName("User")
 public class User extends ParseObject {
@@ -69,4 +75,11 @@ public class User extends ParseObject {
     }
 
     public void removePicture() { remove("picture"); }
+
+    public static User getUser(ParseUser parseUser) throws ParseException {
+        ParseQuery<User> query = new ParseQuery<User>("User");
+        query.whereEqualTo("parseUser", parseUser);
+
+        return query.getFirst();
+    }
 }

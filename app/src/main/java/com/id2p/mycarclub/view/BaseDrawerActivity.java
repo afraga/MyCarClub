@@ -85,7 +85,7 @@ public class BaseDrawerActivity extends ActionBarActivity {
                         break;
                     case 3:
                         Toast.makeText(BaseDrawerActivity.this, "Garage", Toast.LENGTH_SHORT).show();
-                        Intent garageIntent = new Intent(getApplicationContext(), GarageCreationActivity.class);
+                        Intent garageIntent = new Intent(getApplicationContext(), GarageViewActivity.class);
                         startActivity(garageIntent);
                         break;
                     case 4:
