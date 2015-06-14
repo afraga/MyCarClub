@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Garage;
@@ -47,7 +48,7 @@ public class GarageViewActivity extends BaseDrawerActivity {
             mRecyclerView.setLayoutManager(mLayoutManager);
 
             try {
-                mAdapter = new GarageCardAdapter(Garage.getUserGarage(currentUser));
+                mAdapter = new GarageCardAdapter(currentUser);
                 mRecyclerView.setAdapter(mAdapter);
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -95,4 +96,5 @@ public class GarageViewActivity extends BaseDrawerActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

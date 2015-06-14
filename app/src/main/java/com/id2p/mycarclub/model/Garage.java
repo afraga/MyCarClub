@@ -81,4 +81,10 @@ public class Garage extends ParseObject {
         return garageList;
     }
 
+    public static Garage getGarageById(String garageId) throws ParseException {
+        ParseQuery<Garage> query = new ParseQuery<Garage>("Garage");
+        query.whereEqualTo("objectId", garageId);
+        return query.getFirst();
+    }
+
 }

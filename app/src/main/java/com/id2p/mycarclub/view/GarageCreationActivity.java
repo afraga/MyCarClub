@@ -97,14 +97,21 @@ public class GarageCreationActivity extends BaseDrawerActivity {
 
             // check if we are editing an existing Event or creating a new one
             Bundle bundle = getIntent().getExtras();
-            if (bundle != null && bundle.get("garage") != null) {
-                currentGarage = (Garage) bundle.get("garage");
+            if (bundle != null && bundle.get("garageId") != null) {
+                String garageId = bundle.getString("garageId");
+                try {
+                    currentGarage = Garage.getGarageById(garageId);
+                    loadGarageData();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    Toast.makeText(GarageCreationActivity.this, "Unable to find item in Garage with this id! Try again later.", Toast.LENGTH_SHORT).show();
+                    finish();
+                }
             } else {
                 currentGarage = new Garage();
+                thumbnailList = new ArrayList<ParseFile>();
+                imageList = new ArrayList<ParseFile>();
             }
-
-            thumbnailList = new ArrayList<ParseFile>();
-            imageList = new ArrayList<ParseFile>();
 
             super.onCreateDrawer(currentUser);
         }
@@ -236,6 +243,21 @@ public class GarageCreationActivity extends BaseDrawerActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void loadGarageData() {
+        carMakeEditText.setText(currentGarage.getCarMake());
+        carModelEditText.setText(currentGarage.getCarModel());
+        carYearEditText.setText(currentGarage.getCarYear().toString());
+        carDetailsEditText.setText(currentGarage.getCarDetails());
+        thumbnailList = currentGarage.getCarThumbImages();
+        imageList = currentGarage.getCarImages();
+
+        int i = 0;
+        for (ParseFile file : imageList) {
+            imageListAdapter.setImageAtPosition(i, file);
+            i++;
+        }
     }
 
     private void saveGarageData() {
