@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.id2p.mycarclub.view.EventListActivity">
+    <item android:id="@+id/action_create_event" android:title="@string/action_create_event"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_user_events" android:title="@string/action_user_events"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/action_chapter_events" android:title="@string/action_chapter_events"
+        android:orderInCategory="100" app:showAsAction="never" />
+</menu>

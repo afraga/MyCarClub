@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,7 +25,7 @@ import com.parse.ParseImageView;
 import com.parse.ParseUser;
 
 
-public class BaseDrawerActivity extends ActionBarActivity {
+public class BaseDrawerActivity extends AppCompatActivity {
 
     private View mDrawerHeader;
     private ListView mDrawerList;
@@ -90,7 +91,7 @@ public class BaseDrawerActivity extends ActionBarActivity {
                         break;
                     case 4:
                         Toast.makeText(BaseDrawerActivity.this, "Events", Toast.LENGTH_SHORT).show();
-                        Intent eventIntent = new Intent(getApplicationContext(), EventCreationActivity.class);
+                        Intent eventIntent = new Intent(getApplicationContext(), EventListActivity.class);
                         startActivity(eventIntent);
                         break;
                     case 5:

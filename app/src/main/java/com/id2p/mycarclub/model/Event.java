@@ -1,9 +1,9 @@
 package com.id2p.mycarclub.model;
 
 import com.parse.ParseClassName;
+import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseUser;
-
+import com.parse.ParseQuery;
 import java.util.Date;
 import java.util.List;
 
@@ -63,6 +63,20 @@ public class Event extends ParseObject {
 
     public Date getDate() {
         return getDate("date");
+    }
+
+    public static List<Event> getUserEvents(User user) throws ParseException {
+        ParseQuery<Event> query = new ParseQuery<Event>("Event");
+        query.whereEqualTo("organizer", user);
+        List<Event> eventList = query.find();
+        return eventList;
+    }
+
+    public static List<Event> getChapterEvents(User user) throws ParseException {
+        ParseQuery<Event> query = new ParseQuery<Event>("Event");
+        query.whereEqualTo("chapter", user.getChapter());
+        List<Event> eventList = query.find();
+        return eventList;
     }
 
 }

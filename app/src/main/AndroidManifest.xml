@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".MyCarClubApplication"
@@ -12,6 +14,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name=".view.MainActivity"
             android:label="@string/app_name" >
@@ -44,15 +47,7 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <meta-data
-            android:name="com.parse.APPLICATION_ID"
-            android:value="@string/parse_app_id" />
-        <meta-data
-            android:name="com.parse.CLIENT_KEY"
-            android:value="@string/parse_client_key" />
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+
 
         <activity
             android:name=".view.ProfileActivity"
@@ -66,6 +61,35 @@
             android:name=".view.EventCreationActivity"
             android:label="@string/title_activity_event_creation"
             android:parentActivityName=".view.BaseDrawerActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
+        </activity>
+        <activity
+            android:name=".view.AdCreationActivity"
+            android:label="@string/title_activity_ad_creation"
+            android:parentActivityName=".view.BaseDrawerActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
+        </activity>
+        <activity
+            android:name=".view.GarageCreationActivity"
+            android:label="@string/title_activity_garage_creation" >
+        </activity>
+        <activity
+            android:name=".view.GarageViewActivity"
+            android:label="@string/title_activity_garage_view"
+            android:parentActivityName=".view.BaseDrawerActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
+        </activity>
+        <activity
+            android:name=".view.EventListActivity"
+            android:label="@string/title_activity_event_list"
+            android:parentActivityName=".view.BaseDrawerActivity"
+            android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
