@@ -1,4 +1,4 @@
-package com.id2p.mycarclub.utils;
+package com.id2p.mycarclub.utils.adapter;
 
 /**
  * Created by anfraga on 2015-06-05.

@@ -37,8 +37,8 @@ import java.util.List;
 
 public class ProfileActivity extends BaseDrawerActivity implements View.OnClickListener {
 
-    private ParseUser parseUser = null;
     private User currentUser = null;
+    private ParseUser parseUser = null;
     private ParseImageView userImage = null;
     private EditText firstNameText = null;
     private EditText lastNameText = null;
@@ -52,58 +52,36 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
+        setContentView(R.layout.activity_profile);
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+        // init UI elements
+        userImage = (ParseImageView) findViewById(R.id.user_image);
+        firstNameText = (EditText) findViewById(R.id.firstName);
+        lastNameText = (EditText) findViewById(R.id.lastName);
+        emailText = (EditText) findViewById(R.id.email);
+        nickNameText = (EditText) findViewById(R.id.nickName);
+        chapterSpinner = (Spinner) findViewById(R.id.chapterSpinner);
+        changePicture = (TextView) findViewById(R.id.changePicture);
+        removePicture = (TextView) findViewById(R.id.removePicture);
+        changePicture.setOnClickListener(this);
+        removePicture.setOnClickListener(this);
 
         parseUser = ParseUser.getCurrentUser();
-        if (parseUser == null) {
-            ParseLoginBuilder builder = new ParseLoginBuilder(ProfileActivity.this);
-            startActivityForResult(builder.build(), 0);
-
-            currentUser = new User();
-        } else {
-            setContentView(R.layout.activity_profile);
-
-            // init UI elements
-            userImage = (ParseImageView) findViewById(R.id.user_image);
-            firstNameText = (EditText) findViewById(R.id.firstName);
-            lastNameText = (EditText) findViewById(R.id.lastName);
-            emailText = (EditText) findViewById(R.id.email);
-            nickNameText = (EditText) findViewById(R.id.nickName);
-            chapterSpinner = (Spinner) findViewById(R.id.chapterSpinner);
-            changePicture = (TextView) findViewById(R.id.changePicture);
-            removePicture = (TextView) findViewById(R.id.removePicture);
-            changePicture.setOnClickListener(this);
-            removePicture.setOnClickListener(this);
-
-            // load our logged in user
-            currentUser = getLoggedUser();
-
-            // load list of chapters
-            loadChapters();
-
-            // load user data into fields
-            loadUserData();
-
-            super.onCreateDrawer(currentUser);
-        }
-    }
-
-    private User getLoggedUser() {
-        User user = null;
         try {
-            user = User.getUser(parseUser);
-            if (user == null)
-                user = new User();
+            currentUser = User.getUser(parseUser);
         } catch (ParseException e) {
-            Toast.makeText(ProfileActivity.this, "Error getting user information!", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
+//            e.printStackTrace();
+//            Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
+//            finish();
         }
 
-        return user;
+        // load list of chapters
+        loadChapters();
+
+        // load user data into fields
+        loadUserData();
+
+        super.onCreateDrawer(currentUser);
     }
 
     @Override

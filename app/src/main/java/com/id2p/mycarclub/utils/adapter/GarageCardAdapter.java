@@ -1,15 +1,12 @@
-package com.id2p.mycarclub.utils;
+package com.id2p.mycarclub.utils.adapter;
 
 /**
  * Created by anfraga on 2015-06-12.
  */
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -19,7 +16,6 @@ import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Garage;
 import com.id2p.mycarclub.model.User;
 import com.id2p.mycarclub.view.GarageCreationActivity;
-import com.id2p.mycarclub.view.GarageViewActivity;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;

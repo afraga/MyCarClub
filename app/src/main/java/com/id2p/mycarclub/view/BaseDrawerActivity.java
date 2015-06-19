@@ -75,39 +75,39 @@ public class BaseDrawerActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case  1:
-                        Toast.makeText(BaseDrawerActivity.this, "Home", Toast.LENGTH_SHORT).show();
                         Intent homeIntent = new Intent(getApplicationContext(), MainActivity.class);
+                        homeIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homeIntent);
                         break;
                     case 2:
-                        Toast.makeText(BaseDrawerActivity.this, "Profile", Toast.LENGTH_SHORT).show();
                         Intent profileIntent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        profileIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(profileIntent);
                         break;
                     case 3:
-                        Toast.makeText(BaseDrawerActivity.this, "Garage", Toast.LENGTH_SHORT).show();
                         Intent garageIntent = new Intent(getApplicationContext(), GarageViewActivity.class);
+                        garageIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(garageIntent);
                         break;
                     case 4:
-                        Toast.makeText(BaseDrawerActivity.this, "Events", Toast.LENGTH_SHORT).show();
                         Intent eventIntent = new Intent(getApplicationContext(), EventListActivity.class);
+                        eventIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(eventIntent);
                         break;
                     case 5:
                         Toast.makeText(BaseDrawerActivity.this, "Friends", Toast.LENGTH_SHORT).show();
                         break;
                     case 6:
-                        Toast.makeText(BaseDrawerActivity.this, "Market Place", Toast.LENGTH_SHORT).show();
                         Intent adIntent = new Intent(getApplicationContext(), AdCreationActivity.class);
+                        adIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(adIntent);
                         break;
                     case 7:
-                        Toast.makeText(BaseDrawerActivity.this, "Logout", Toast.LENGTH_SHORT).show();
                         if (ParseUser.getCurrentUser() != null)
                             ParseUser.getCurrentUser().logOut();
 
                         Intent homeIntent2 = new Intent(getApplicationContext(), MainActivity.class); // TODO: should I create another homeIntent or keep already loaded ones globally and use them, lookup best practices on android
+                        homeIntent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(homeIntent2);
 
                         break;

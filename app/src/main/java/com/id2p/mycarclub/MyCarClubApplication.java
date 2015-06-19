@@ -1,6 +1,8 @@
 package com.id2p.mycarclub;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.id2p.mycarclub.model.Ad;
 import com.id2p.mycarclub.model.Event;
@@ -18,6 +20,9 @@ import com.parse.ParseTwitterUtils;
  * Created by Anderson on 2015-05-08.
  */
 public class MyCarClubApplication extends Application {
+
+    private static SharedPreferences preferences;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -35,6 +40,8 @@ public class MyCarClubApplication extends Application {
 
         // Initialize Parse
         Parse.initialize(this, getString(R.string.parse_app_id), getString(R.string.parse_client_key));
+
+        preferences = getSharedPreferences("com.id2p.mycarclub", Context.MODE_PRIVATE);
 
         Parse.setLogLevel(Parse.LOG_LEVEL_DEBUG);
 

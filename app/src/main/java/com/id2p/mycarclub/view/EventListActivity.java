@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Event;
 import com.id2p.mycarclub.model.User;
-import com.id2p.mycarclub.utils.EventsAdapter;
+import com.id2p.mycarclub.utils.adapter.EventsAdapter;
 import com.id2p.mycarclub.utils.ui.SlidingTabLayout;
 import com.parse.ParseException;
 import com.parse.ParseQuery;

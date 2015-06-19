@@ -1,4 +1,4 @@
-package com.id2p.mycarclub.utils;
+package com.id2p.mycarclub.utils.adapter;
 
 import android.content.Context;
 import android.view.View;

@@ -1,5 +1,6 @@
 package com.id2p.mycarclub.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -7,16 +8,15 @@ import android.widget.Toast;
 import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.User;
 import com.parse.ParseException;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.ui.ParseLoginBuilder;
-import java.util.List;
-
 
 public class MainActivity extends BaseDrawerActivity {
 
     private ParseUser parseUser = null;
     private User currentUser = null;
+    private static int LOGIN_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,29 +24,73 @@ public class MainActivity extends BaseDrawerActivity {
 
         parseUser = ParseUser.getCurrentUser();
         if (parseUser == null) {
-            ParseLoginBuilder builder = new ParseLoginBuilder(MainActivity.this);
-            startActivityForResult(builder.build(), 0);
-
-            currentUser = new User();
+            showUserLogin();
         } else {
-            setContentView(R.layout.activity_main);
-
-            // load our logged in user
-            ParseQuery<User> query = new ParseQuery<User>("User");
-            query.whereEqualTo("parseUser", parseUser);
             try {
-                List<User> userList = query.find();
-                if (userList != null && userList.size() > 0)
-                    currentUser = userList.get(0);
-                else
-                    currentUser = new User();
+                currentUser = User.getUser(parseUser);
             } catch (ParseException e) {
-                Toast.makeText(MainActivity.this, "Error getting user information!", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
+                Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
+                finish();
             }
-
-            super.onCreateDrawer(currentUser);
+            showMainActivity();
         }
+    }
+
+    private void showUserLogin() {
+        ParseLoginBuilder builder = new ParseLoginBuilder(MainActivity.this);
+        startActivityForResult(builder.build(), LOGIN_CODE);
+    }
+
+    private void showMainActivity() {
+        setContentView(R.layout.activity_main);
+        super.onCreateDrawer(currentUser);
+    }
+
+    private void showProfileActivity() {
+        Intent profileIntent = new Intent(getApplicationContext(), ProfileActivity.class);
+        startActivity(profileIntent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_CODE ) {
+            if (resultCode==RESULT_OK) {
+                parseUser = ParseUser.getCurrentUser();
+                currentUser = getCurrentUser(parseUser);
+                if (parseUser.isNew()) {
+                    currentUser.setParseUser(parseUser);
+                    if (parseUser.getEmail() != null)
+                        currentUser.setEmail(parseUser.getEmail());
+                    currentUser.saveInBackground(new SaveCallback() {
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                showProfileActivity();
+                            }
+                        }
+                    });
+                } else {
+                    showMainActivity();
+                }
+                Toast.makeText(this, "User loged in " + parseUser.getUsername(), Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this,"User cancelled login ",Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    private User getCurrentUser(ParseUser parseUser) {
+        User user = null;
+        try {
+            user = User.getUser(parseUser);
+            if (user == null) {
+                user = new User();
+            }
+        } catch (ParseException e) {
+            user = new User();
+        }
+
+        return user;
     }
 
     @Override

@@ -31,7 +31,7 @@ import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Event;
 import com.id2p.mycarclub.model.Route;
 import com.id2p.mycarclub.model.User;
-import com.id2p.mycarclub.utils.PlaceArrayAdapter;
+import com.id2p.mycarclub.utils.adapter.PlaceArrayAdapter;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
