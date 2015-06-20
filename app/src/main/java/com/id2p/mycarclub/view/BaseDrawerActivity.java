@@ -50,7 +50,16 @@ public class BaseDrawerActivity extends AppCompatActivity {
         setupDrawer();
 
         if (loggedUser != null) {
-            String userName = loggedUser.getFirstName() + " " + loggedUser.getLastName();
+            StringBuilder userName = new StringBuilder();
+            if (loggedUser.getFirstName() != null)
+                userName.append(loggedUser.getFirstName());
+            if (loggedUser.getLastName() != null) {
+                userName.append(" ");
+                userName.append(loggedUser.getLastName());
+            }
+            if (userName.length() == 0 && loggedUser.getEmail() != null)
+                userName.append(loggedUser.getEmail());
+
             mUserName.setText(userName);
             mUserPicture.setParseFile(loggedUser.getPicture());
             mUserPicture.loadInBackground(new GetDataCallback() {

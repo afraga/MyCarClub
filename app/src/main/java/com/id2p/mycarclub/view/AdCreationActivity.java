@@ -1,5 +1,6 @@
 package com.id2p.mycarclub.view;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -34,6 +35,7 @@ import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Ad;
 import com.id2p.mycarclub.model.Route;
 import com.id2p.mycarclub.model.User;
+import com.id2p.mycarclub.utils.ImageUtils;
 import com.id2p.mycarclub.utils.adapter.ImageAdapter;
 import com.id2p.mycarclub.utils.adapter.PlaceArrayAdapter;
 import com.parse.ParseException;
@@ -73,10 +75,6 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
             new LatLng(28.70, -127.50), new LatLng(48.85, -55.90));
     private ImageAdapter adImageListAdapter = null;
     private static final int SELECT_PHOTO = 1;
-    private static final int THUMBNAIL_WIDTH = 150;
-    private static final int THUMBNAIL_HEIGHT = 150;
-    private static final int IMAGE_WIDTH = 600;
-    private static final int IMAGE_HEIGHT = 480;
     private List<ParseFile> adImageList = null;
     private List<ParseFile> adThumbnailList = null;
     private static int lastSelectedIndex = 0;
@@ -84,82 +82,67 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_ad_creation);
 
         parseUser = ParseUser.getCurrentUser();
-
-        if (parseUser == null) {
-            ParseLoginBuilder builder = new ParseLoginBuilder(AdCreationActivity.this);
-            startActivityForResult(builder.build(), 0);
-        } else {
-            setContentView(R.layout.activity_ad_creation);
-
-            googleApiClient = new GoogleApiClient.Builder(AdCreationActivity.this)
-                    .addApi(Places.GEO_DATA_API)
-                    .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
-                    .addConnectionCallbacks(this)
-                    .build();
-
-            // init UI elements
-            adNameText = (EditText) findViewById(R.id.adName);
-            adDescriptionText = (EditText) findViewById(R.id.adDescription);
-            adTypeSpinner = (Spinner) findViewById(R.id.adType);
-            adCategorySpinner = (Spinner) findViewById(R.id.adCategory);
-            adPriceText = (EditText) findViewById(R.id.adPrice);
-            adItemLocation = (AutoCompleteTextView) findViewById(R.id.adItemLocationText);
-            adThumbsView = (GridView) findViewById(R.id.thumbsGrid);
-
-            // set data adapters
-            placeArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_NORTH_AMERICA, null);
-            adItemLocation.setAdapter(placeArrayAdapter);
-
-            adImageListAdapter = new ImageAdapter(this);
-            adThumbsView.setAdapter(adImageListAdapter);
-
-            // register events
-            adThumbsView.setOnItemClickListener(adThumbsClickListener);
-            adItemLocation.setOnItemClickListener(autoCompleteClickListener);
-
-            // load our logged in user
-            ParseQuery<User> query = new ParseQuery<User>("User");
-            query.whereEqualTo("parseUser", parseUser);
-            try {
-                List<User> userList = query.find();
-                if (userList != null && userList.size() > 0)
-                    currentUser = userList.get(0);
-                else
-                    currentUser = new User();
-            } catch (ParseException e) {
-                Toast.makeText(AdCreationActivity.this, "Error getting user information!", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-
-            // check if we are editing an existing Event or creating a new one
-            Bundle bundle = getIntent().getExtras();
-            if (bundle != null && bundle.get("ad") != null) {
-                currentAd = (Ad) bundle.get("ad");
-            } else {
-                currentAd = new Ad();
-            }
-
-            // load list of chapters
-            loadAdTypesAndCategories();
-
-            adThumbnailList = new ArrayList<ParseFile>();
-            adImageList = new ArrayList<ParseFile>();
-
-            super.onCreateDrawer(currentUser);
+        try {
+            currentUser = User.getUser(parseUser);
+        } catch (ParseException e) {
+            Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
+            finish();
         }
+
+        // init UI elements
+        adNameText = (EditText) findViewById(R.id.adName);
+        adDescriptionText = (EditText) findViewById(R.id.adDescription);
+        adTypeSpinner = (Spinner) findViewById(R.id.adType);
+        adCategorySpinner = (Spinner) findViewById(R.id.adCategory);
+        adPriceText = (EditText) findViewById(R.id.adPrice);
+        adItemLocation = (AutoCompleteTextView) findViewById(R.id.adItemLocationText);
+        adThumbsView = (GridView) findViewById(R.id.thumbsGrid);
+
+        googleApiClient = new GoogleApiClient.Builder(AdCreationActivity.this)
+                .addApi(Places.GEO_DATA_API)
+                .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
+                .addConnectionCallbacks(this)
+                .build();
+
+        // set data adapters
+        placeArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_NORTH_AMERICA, null);
+        adItemLocation.setAdapter(placeArrayAdapter);
+
+        adImageListAdapter = new ImageAdapter(this);
+        adThumbsView.setAdapter(adImageListAdapter);
+
+        // register events
+        adThumbsView.setOnItemClickListener(adThumbsClickListener);
+        adItemLocation.setOnItemClickListener(autoCompleteClickListener);
+
+        // check if we are editing an existing Event or creating a new one
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && bundle.get("ad") != null) {
+            currentAd = (Ad) bundle.get("ad");
+        } else {
+            currentAd = new Ad();
+        }
+
+        // load list of chapters
+        loadAdTypesAndCategories();
+
+        adThumbnailList = new ArrayList<ParseFile>();
+        adImageList = new ArrayList<ParseFile>();
+
+        super.onCreateDrawer(currentUser);
+
     }
 
     private GridView.OnItemClickListener adThumbsClickListener = new GridView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-//            Toast.makeText(AdCreationActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-
-            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setType("image/*");
-            lastSelectedIndex = position;
-            startActivityForResult(intent, SELECT_PHOTO);
+        Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.setType("image/*");
+        lastSelectedIndex = position;
+        startActivityForResult(intent, SELECT_PHOTO);
         }
     };
 
@@ -169,7 +152,7 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
             if (requestCode == SELECT_PHOTO) {
                 Uri selectedImageUri = data.getData();
                 if (Build.VERSION.SDK_INT < 19) {
-                    String selectedImagePath = getPath(selectedImageUri);
+                    String selectedImagePath = ImageUtils.getPath(this, selectedImageUri);
                     Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
                     setAdImage(bitmap);
                 }
@@ -193,8 +176,8 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
 
     private void setAdImage(Bitmap adImageBitmap) {
 
-        byte[] thumbBytes = getScaledPhoto(adImageBitmap, lastSelectedIndex, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
-        byte[] imageBytes = getScaledPhoto(adImageBitmap, lastSelectedIndex, IMAGE_WIDTH, IMAGE_HEIGHT);
+        byte[] thumbBytes = ImageUtils.getScaledPhoto(adImageBitmap, ImageUtils.THUMBNAIL_WIDTH, ImageUtils.THUMBNAIL_HEIGHT);
+        byte[] imageBytes = ImageUtils.getScaledPhoto(adImageBitmap, ImageUtils.IMAGE_WIDTH, ImageUtils.IMAGE_HEIGHT);
 
         // Save the thumbnail image to Parse
         final ParseFile thumbFile = new ParseFile("ad_image.jpg", thumbBytes);
@@ -227,42 +210,6 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
 
     }
 
-    /**
-     * helper to retrieve the path of an image URI
-     */
-    public String getPath(Uri uri) {
-        if( uri == null ) {
-            return null;
-        }
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-        return uri.getPath();
-    }
-
-    /*
-     * ParseQueryAdapter loads ParseFiles into a ParseImageView at whatever size
-     * they are saved. Since we never need a full-size image in our app, we'll
-     * save a scaled one right away.
-     */
-    private byte[] getScaledPhoto(Bitmap image, final int thumbnailIndex, int width, int height) {
-
-        // Resize photo from camera byte array
-        final Bitmap userImageScaled = Bitmap.createScaledBitmap(image, width, height
-                * image.getHeight() / image.getWidth(), false);
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        userImageScaled.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-
-        byte[] scaledData = bos.toByteArray();
-        return scaledData;
-    }
-
     private AdapterView.OnItemClickListener autoCompleteClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView adapterView, View view, int position, long id) {
@@ -284,7 +231,6 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
         ArrayAdapter mCatAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, categoryArray);
         adCategorySpinner.setAdapter(mCatAdapter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -366,13 +312,16 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
             return;
         }
 
-        try {
-            currentAd.save(); // TODO: change to saveInBackground() later
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        final ProgressDialog progress = new ProgressDialog(AdCreationActivity.this);
+        progress.setMessage("Saving...");
+        progress.show();
 
-        finish();
+        currentAd.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                progress.dismiss();
+            }
+        });
     }
 
     @Override

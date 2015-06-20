@@ -1,5 +1,6 @@
 package com.id2p.mycarclub.view;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -20,6 +21,7 @@ import android.widget.Toast;
 
 import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.User;
+import com.id2p.mycarclub.utils.ImageUtils;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -70,9 +72,8 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
         try {
             currentUser = User.getUser(parseUser);
         } catch (ParseException e) {
-//            e.printStackTrace();
-//            Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
-//            finish();
+            Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
+            finish();
         }
 
         // load list of chapters
@@ -97,25 +98,6 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
                 userImage.setImageResource(R.drawable.com_facebook_profile_picture_blank_square);
                 break;
         }
-
-    }
-
-    /**
-     * helper to retrieve the path of an image URI
-     */
-    public String getPath(Uri uri) {
-        if( uri == null ) {
-            return null;
-        }
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-        return uri.getPath();
     }
 
     @Override
@@ -124,7 +106,7 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
             if (requestCode == SELECT_PHOTO) {
                 Uri selectedImageUri = data.getData();
                 if (Build.VERSION.SDK_INT < 19) {
-                    String selectedImagePath = getPath(selectedImageUri);
+                    String selectedImagePath = ImageUtils.getPath(this, selectedImageUri);
                     Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
                     saveScaledPhoto(bitmap);
                 }
@@ -152,14 +134,11 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
         chapterSpinner.setAdapter(mAdapter);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        saveUserData();
-    }
-
     private void loadUserData() {
+        final ProgressDialog progress = new ProgressDialog(ProfileActivity.this);
+        progress.setMessage("Loading...");
+        progress.show();
+
         if (currentUser.getFirstName() != null)
             firstNameText.setText(currentUser.getFirstName());
         if (currentUser.getLastName() != null)
@@ -183,9 +162,12 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
                 @Override
                 public void done(byte[] data, ParseException e) {
                     userImage.setVisibility(View.VISIBLE);
+                    progress.dismiss();
                 }
             });
         }
+
+        progress.dismiss();
     }
 
     private void saveUserData() {
@@ -202,11 +184,17 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
         if (parseUser != null)
             currentUser.setParseUser(parseUser);
 
-        try {
-            currentUser.save(); // TODO: change to saveInBackground() later
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        final ProgressDialog progress = new ProgressDialog(ProfileActivity.this);
+        progress.setMessage("Saving...");
+        progress.show();
+
+        currentUser.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                progress.dismiss();
+            }
+        });
+
     }
 
     @Override
@@ -223,47 +211,11 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_save) {
+            saveUserData();
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private Bitmap getScaledBitmap(String picturePath, int width, int height) {
-        BitmapFactory.Options sizeOptions = new BitmapFactory.Options();
-        sizeOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(picturePath, sizeOptions);
-
-        int inSampleSize = calculateInSampleSize(sizeOptions, width, height);
-
-        sizeOptions.inJustDecodeBounds = false;
-        sizeOptions.inSampleSize = inSampleSize;
-
-        return BitmapFactory.decodeFile(picturePath, sizeOptions);
-    }
-
-    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            // Calculate ratios of height and width to requested height and
-            // width
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-            // Choose the smallest ratio as inSampleSize value, this will
-            // guarantee
-            // a final image with both dimensions larger than or equal to the
-            // requested height and width.
-            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-        }
-
-        return inSampleSize;
     }
 
     /*
@@ -272,15 +224,7 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
      * save a scaled one right away.
      */
     private void saveScaledPhoto(Bitmap image) {
-
-        // Resize photo from camera byte array
-        final Bitmap userImageScaled = Bitmap.createScaledBitmap(image, 100, 100
-                * image.getHeight() / image.getWidth(), false);
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        userImageScaled.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-
-        byte[] scaledData = bos.toByteArray();
+        byte[] scaledData = ImageUtils.getScaledPhoto(image, ImageUtils.PROFILE_WIDTH, ImageUtils.PROFILE_HEIGHT);
 
         // Save the scaled image to Parse
         final ParseFile photoFile = new ParseFile("user_photo.jpg", scaledData);
@@ -302,7 +246,6 @@ public class ProfileActivity extends BaseDrawerActivity implements View.OnClickL
                 }
             }
         });
-
     }
 
 

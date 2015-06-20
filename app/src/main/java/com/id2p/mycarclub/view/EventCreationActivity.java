@@ -1,6 +1,7 @@
 package com.id2p.mycarclub.view;
 
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.Html;
@@ -36,6 +37,7 @@ import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.ui.ParseLoginBuilder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,12 +108,59 @@ public class EventCreationActivity extends BaseDrawerActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_event_creation);
+
+        parseUser = ParseUser.getCurrentUser();
+        try {
+            currentUser = User.getUser(parseUser);
+        } catch (ParseException e) {
+            Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        // init UI elements
+        eventNameText = (EditText) findViewById(R.id.eventName);
+        eventDescriptionText = (EditText) findViewById(R.id.eventDescription);
+        eventChapterSpinner = (Spinner) findViewById(R.id.eventChapter);
+        eventDate = (EditText) findViewById(R.id.eventDate);
+        eventTime = (EditText) findViewById(R.id.eventTime);
+        addressText = (AutoCompleteTextView) findViewById(R.id.addressText);
+        addWaypointButton = (ImageButton) findViewById(R.id.addWaypoint);
+        removeWaypointButton = (ImageButton) findViewById(R.id.removeWaypoint);
+        routeList = (ListView) findViewById(R.id.routeList);
 
         googleApiClient = new GoogleApiClient.Builder(EventCreationActivity.this)
                 .addApi(Places.GEO_DATA_API)
                 .enableAutoManage(this, GOOGLE_API_CLIENT_ID, this)
                 .addConnectionCallbacks(this)
                 .build();
+
+        // set data adapters
+        placeArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_NORTH_AMERICA, null);
+        addressText.setAdapter(placeArrayAdapter);
+
+        parseGeoPointListAdapter = new ArrayAdapter<Route>(getApplicationContext(), android.R.layout.simple_list_item_1, parseGeoPointList);
+        routeList.setAdapter(parseGeoPointListAdapter);
+
+        // set click listeners
+        eventDate.setOnClickListener(this);
+        eventTime.setOnClickListener(this);
+        addressText.setOnItemClickListener(this);
+        addWaypointButton.setOnClickListener(this);
+        removeWaypointButton.setOnClickListener(this);
+
+        // check if we are editing an existing Event or creating a new one
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && bundle.get("event") != null) {
+            currentEvent = (Event) bundle.get("event");
+        } else {
+            currentEvent = new Event();
+        }
+
+        // load list of chapters
+        loadChapters();
+
+        super.onCreateDrawer(currentUser);
     }
 
     @Override
@@ -151,7 +200,7 @@ public class EventCreationActivity extends BaseDrawerActivity
     protected void onStart() {
         super.onStart();
 
-        parseUser = ParseUser.getCurrentUser();
+/*        parseUser = ParseUser.getCurrentUser();
 
         if (parseUser == null) {
             ParseLoginBuilder builder = new ParseLoginBuilder(EventCreationActivity.this);
@@ -211,6 +260,7 @@ public class EventCreationActivity extends BaseDrawerActivity
 
             super.onCreateDrawer(currentUser);
         }
+        */
     }
 
     private void loadChapters() {
@@ -347,13 +397,16 @@ public class EventCreationActivity extends BaseDrawerActivity
             return;
         }
 
-        try {
-            currentEvent.save(); // TODO: change to saveInBackground() later
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        final ProgressDialog progress = new ProgressDialog(EventCreationActivity.this);
+        progress.setMessage("Saving...");
+        progress.show();
 
-        finish();
+        currentEvent.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                progress.dismiss();
+            }
+        });
     }
 
 }

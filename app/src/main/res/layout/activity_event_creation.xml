@@ -35,6 +35,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
+                    android:singleLine="true"
+                    android:maxLength="50"
+                    android:nextFocusDown="@+id/eventDescription"
                     android:hint="Name"/>
 
             </LinearLayout>
@@ -50,7 +53,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="false"
-                    android:maxLines="3"
+                    android:maxLines="5"
+                    android:maxLength="200"
+                    android:nextFocusDown="@+id/addressText"
                     android:hint="Description"/>
 
             </LinearLayout>
@@ -79,6 +84,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
+                    android:singleLine="true"
+                    android:nextFocusDown="@+id/eventTime"
                     android:hint="Date"/>
 
             </LinearLayout>
@@ -94,6 +101,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:editable="false"
+                    android:singleLine="true"
+                    android:nextFocusDown="@+id/addressText"
                     android:hint="Time"/>
 
             </LinearLayout>
@@ -111,6 +120,9 @@
                     android:hint="Enter Address..."
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="0.60"
+                    android:singleLine="true"
+                    android:maxLength="200"
+                    android:nextFocusDown="@+id/addWaypoint"
                     android:paddingTop="20dp" />
 
                 <ImageButton

@@ -35,6 +35,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="10dp"
+                    android:singleLine="true"
+                    android:maxLength="50"
+                    android:nextFocusDown="@+id/adDescription"
                     android:hint="Name"/>
 
             </LinearLayout>
@@ -50,7 +53,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:singleLine="false"
-                    android:maxLines="3"
+                    android:maxLines="5"
+                    android:maxLength="200"
+                    android:nextFocusDown="@+id/adPrice"
                     android:hint="Description"/>
 
             </LinearLayout>
@@ -77,6 +82,7 @@
                 <Spinner
                     android:id="@+id/adCategory"
                     android:layout_width="match_parent"
+                    android:nextFocusDown="@+id/adPrice"
                     android:layout_height="wrap_content"/>
 
             </LinearLayout>
@@ -92,6 +98,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
+                    android:singleLine="true"
+                    android:maxLength="15"
+                    android:nextFocusDown="@+id/adItemLocationText"
                     android:hint="Price"/>
 
             </LinearLayout>
@@ -109,6 +118,9 @@
                     android:hint="Enter Item Location..."
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="0.60"
+                    android:singleLine="true"
+                    android:maxLength="200"
+                    android:nextFocusDown="@+id/thumbsGrid"
                     android:paddingTop="20dp" />
 
             </LinearLayout>
@@ -129,9 +141,6 @@
                     android:horizontalSpacing="10dp"
                     android:stretchMode="columnWidth"
                     android:gravity="center">
-
-
-
 
                </GridView>
 

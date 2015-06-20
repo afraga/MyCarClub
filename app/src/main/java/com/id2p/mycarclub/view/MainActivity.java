@@ -72,9 +72,8 @@ public class MainActivity extends BaseDrawerActivity {
                 } else {
                     showMainActivity();
                 }
-                Toast.makeText(this, "User loged in " + parseUser.getUsername(), Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(this,"User cancelled login ",Toast.LENGTH_LONG).show();
+                finish();
             }
         }
     }

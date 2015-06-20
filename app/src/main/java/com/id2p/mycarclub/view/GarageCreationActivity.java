@@ -1,6 +1,7 @@
 package com.id2p.mycarclub.view;
 
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Garage;
 import com.id2p.mycarclub.model.User;
+import com.id2p.mycarclub.utils.ImageUtils;
 import com.id2p.mycarclub.utils.adapter.ImageAdapter;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -46,10 +48,6 @@ public class GarageCreationActivity extends BaseDrawerActivity {
     private EditText carDetailsEditText = null;
     private GridView carThumbsGridView = null;
     private static final int SELECT_PHOTO = 1;
-    private static final int THUMBNAIL_WIDTH = 150;
-    private static final int THUMBNAIL_HEIGHT = 150;
-    private static final int IMAGE_WIDTH = 600;
-    private static final int IMAGE_HEIGHT = 480;
     private List<ParseFile> imageList = null;
     private List<ParseFile> thumbnailList = null;
     private static int lastSelectedIndex = 0;
@@ -59,62 +57,49 @@ public class GarageCreationActivity extends BaseDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_garage_creation);
 
         parseUser = ParseUser.getCurrentUser();
-
-        if (parseUser == null) {
-            ParseLoginBuilder builder = new ParseLoginBuilder(GarageCreationActivity.this);
-            startActivityForResult(builder.build(), 0);
-        } else {
-            setContentView(R.layout.activity_garage_creation);
-
-            carMakeEditText = (EditText) findViewById(R.id.carMake);
-            carModelEditText = (EditText) findViewById(R.id.carModel);
-            carYearEditText = (EditText) findViewById(R.id.carYear);
-            carDetailsEditText = (EditText) findViewById(R.id.carDetails);
-            carThumbsGridView = (GridView) findViewById(R.id.thumbsGrid);
-
-            // set data adapters
-            imageListAdapter = new ImageAdapter(this);
-            carThumbsGridView.setAdapter(imageListAdapter);
-
-            // register events
-            carThumbsGridView.setOnItemClickListener(thumbsClickListener);
-
-            // load our logged in user
-            ParseQuery<User> query = new ParseQuery<User>("User");
-            query.whereEqualTo("parseUser", parseUser);
-            try {
-                List<User> userList = query.find();
-                if (userList != null && userList.size() > 0)
-                    currentUser = userList.get(0);
-                else
-                    currentUser = new User();
-            } catch (ParseException e) {
-                Toast.makeText(GarageCreationActivity.this, "Error getting user information!", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-
-            // check if we are editing an existing Event or creating a new one
-            Bundle bundle = getIntent().getExtras();
-            if (bundle != null && bundle.get("garageId") != null) {
-                String garageId = bundle.getString("garageId");
-                try {
-                    currentGarage = Garage.getGarageById(garageId);
-                    loadGarageData();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                    Toast.makeText(GarageCreationActivity.this, "Unable to find item in Garage with this id! Try again later.", Toast.LENGTH_SHORT).show();
-                    finish();
-                }
-            } else {
-                currentGarage = new Garage();
-                thumbnailList = new ArrayList<ParseFile>();
-                imageList = new ArrayList<ParseFile>();
-            }
-
-            super.onCreateDrawer(currentUser);
+        try {
+            currentUser = User.getUser(parseUser);
+        } catch (ParseException e) {
+            Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
+            finish();
         }
+
+        // init UI elements
+        carMakeEditText = (EditText) findViewById(R.id.carMake);
+        carModelEditText = (EditText) findViewById(R.id.carModel);
+        carYearEditText = (EditText) findViewById(R.id.carYear);
+        carDetailsEditText = (EditText) findViewById(R.id.carDetails);
+        carThumbsGridView = (GridView) findViewById(R.id.thumbsGrid);
+
+        // set data adapters
+        imageListAdapter = new ImageAdapter(this);
+        carThumbsGridView.setAdapter(imageListAdapter);
+
+        // register events
+        carThumbsGridView.setOnItemClickListener(thumbsClickListener);
+
+        // check if we are editing an existing Event or creating a new one
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null && bundle.get("garageId") != null) {
+            String garageId = bundle.getString("garageId");
+            try {
+                currentGarage = Garage.getGarageById(garageId);
+                loadGarageData();
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Toast.makeText(GarageCreationActivity.this, "Unable to find item in Garage with this id! Try again later.", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        } else {
+            currentGarage = new Garage();
+            thumbnailList = new ArrayList<ParseFile>();
+            imageList = new ArrayList<ParseFile>();
+        }
+
+        super.onCreateDrawer(currentUser);
     }
 
     private GridView.OnItemClickListener thumbsClickListener = new GridView.OnItemClickListener() {
@@ -133,7 +118,7 @@ public class GarageCreationActivity extends BaseDrawerActivity {
             if (requestCode == SELECT_PHOTO) {
                 Uri selectedImageUri = data.getData();
                 if (Build.VERSION.SDK_INT < 19) {
-                    String selectedImagePath = getPath(selectedImageUri);
+                    String selectedImagePath = ImageUtils.getPath(this, selectedImageUri);
                     Bitmap bitmap = BitmapFactory.decodeFile(selectedImagePath);
                     setGarageImage(bitmap);
                 }
@@ -156,9 +141,8 @@ public class GarageCreationActivity extends BaseDrawerActivity {
     }
 
     private void setGarageImage(Bitmap adImageBitmap) {
-
-        byte[] thumbBytes = getScaledPhoto(adImageBitmap, lastSelectedIndex, THUMBNAIL_WIDTH, THUMBNAIL_HEIGHT);
-        byte[] imageBytes = getScaledPhoto(adImageBitmap, lastSelectedIndex, IMAGE_WIDTH, IMAGE_HEIGHT);
+        byte[] thumbBytes = ImageUtils.getScaledPhoto(adImageBitmap, ImageUtils.THUMBNAIL_WIDTH, ImageUtils.THUMBNAIL_HEIGHT);
+        byte[] imageBytes = ImageUtils.getScaledPhoto(adImageBitmap, ImageUtils.IMAGE_WIDTH, ImageUtils.IMAGE_HEIGHT);
 
         // Save the thumbnail image to Parse
         final ParseFile thumbFile = new ParseFile("ad_image.jpg", thumbBytes);
@@ -191,38 +175,6 @@ public class GarageCreationActivity extends BaseDrawerActivity {
 
     }
 
-    private byte[] getScaledPhoto(Bitmap image, final int thumbnailIndex, int width, int height) {
-
-        // Resize photo from camera byte array
-        final Bitmap userImageScaled = Bitmap.createScaledBitmap(image, width, height
-                * image.getHeight() / image.getWidth(), false);
-
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        userImageScaled.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-
-        byte[] scaledData = bos.toByteArray();
-        return scaledData;
-    }
-
-    /**
-     * helper to retrieve the path of an image URI
-     */
-    public String getPath(Uri uri) {
-        if( uri == null ) {
-            return null;
-        }
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-        return uri.getPath();
-    }
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -235,6 +187,7 @@ public class GarageCreationActivity extends BaseDrawerActivity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        // TODO: does the above mean I need to change parent so that back button loads Main activity instead of Drawer?????
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -302,13 +255,16 @@ public class GarageCreationActivity extends BaseDrawerActivity {
             return;
         }
 
-        try {
-            currentGarage.save(); // TODO: change to saveInBackground() later
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        final ProgressDialog progress = new ProgressDialog(GarageCreationActivity.this);
+        progress.setMessage("Saving...");
+        progress.show();
 
-        finish();
+        currentGarage.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                progress.dismiss();
+            }
+        });
 
     }
 
