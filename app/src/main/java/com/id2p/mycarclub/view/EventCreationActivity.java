@@ -33,6 +33,7 @@ import com.id2p.mycarclub.model.Event;
 import com.id2p.mycarclub.model.Route;
 import com.id2p.mycarclub.model.User;
 import com.id2p.mycarclub.utils.adapter.PlaceArrayAdapter;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseGeoPoint;
 import com.parse.ParseQuery;
@@ -149,16 +150,31 @@ public class EventCreationActivity extends BaseDrawerActivity
         addWaypointButton.setOnClickListener(this);
         removeWaypointButton.setOnClickListener(this);
 
+        // load list of chapters
+        loadChapters();
+
         // check if we are editing an existing Event or creating a new one
         Bundle bundle = getIntent().getExtras();
-        if (bundle != null && bundle.get("event") != null) {
-            currentEvent = (Event) bundle.get("event");
+        if (bundle != null && bundle.get("eventId") != null) {
+            final ProgressDialog progress = new ProgressDialog(EventCreationActivity.this);
+            progress.setMessage("Loading...");
+            progress.show();
+
+            String eventId = bundle.getString("eventId");
+            Event.getEventByIdInBackGround(eventId, new GetCallback<Event>() {
+                @Override
+                public void done(Event event, ParseException e) {
+                    currentEvent = event;
+
+                    loadEventData();
+
+                    progress.dismiss();
+                }
+            });
+
         } else {
             currentEvent = new Event();
         }
-
-        // load list of chapters
-        loadChapters();
 
         super.onCreateDrawer(currentUser);
     }
@@ -194,73 +210,6 @@ public class EventCreationActivity extends BaseDrawerActivity
             return true;
         }
         return false;
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-/*        parseUser = ParseUser.getCurrentUser();
-
-        if (parseUser == null) {
-            ParseLoginBuilder builder = new ParseLoginBuilder(EventCreationActivity.this);
-            startActivityForResult(builder.build(), 0);
-        } else {
-            setContentView(R.layout.activity_event_creation);
-
-            // init UI elements
-            eventNameText = (EditText) findViewById(R.id.eventName);
-            eventDescriptionText = (EditText) findViewById(R.id.eventDescription);
-            eventChapterSpinner = (Spinner) findViewById(R.id.eventChapter);
-            eventDate = (EditText) findViewById(R.id.eventDate);
-            eventTime = (EditText) findViewById(R.id.eventTime);
-            addressText = (AutoCompleteTextView) findViewById(R.id.addressText);
-            addWaypointButton = (ImageButton) findViewById(R.id.addWaypoint);
-            removeWaypointButton = (ImageButton) findViewById(R.id.removeWaypoint);
-            routeList = (ListView) findViewById(R.id.routeList);
-
-            // set data adapters
-            placeArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_NORTH_AMERICA, null);
-            addressText.setAdapter(placeArrayAdapter);
-
-            parseGeoPointListAdapter = new ArrayAdapter<Route>(getApplicationContext(), android.R.layout.simple_list_item_1, parseGeoPointList);
-            routeList.setAdapter(parseGeoPointListAdapter);
-
-            // set click listeners
-            eventDate.setOnClickListener(this);
-            eventTime.setOnClickListener(this);
-            addressText.setOnItemClickListener(this);
-            addWaypointButton.setOnClickListener(this);
-            removeWaypointButton.setOnClickListener(this);
-
-            // load our logged in user
-            ParseQuery<User> query = new ParseQuery<User>("User");
-            query.whereEqualTo("parseUser", parseUser);
-            try {
-                List<User> userList = query.find();
-                if (userList != null && userList.size() > 0)
-                    currentUser = userList.get(0);
-                else
-                    currentUser = new User();
-            } catch (ParseException e) {
-                Toast.makeText(EventCreationActivity.this, "Error getting user information!", Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
-
-            // check if we are editing an existing Event or creating a new one
-            Bundle bundle = getIntent().getExtras();
-            if (bundle != null && bundle.get("event") != null) {
-                currentEvent = (Event) bundle.get("event");
-            } else {
-                currentEvent = new Event();
-            }
-
-            // load list of chapters
-            loadChapters();
-
-            super.onCreateDrawer(currentUser);
-        }
-        */
     }
 
     private void loadChapters() {
@@ -407,6 +356,31 @@ public class EventCreationActivity extends BaseDrawerActivity
                 progress.dismiss();
             }
         });
+    }
+
+    public void loadEventData() {
+        eventNameText.setText(currentEvent.getName());
+        eventDescriptionText.setText(currentEvent.getDescription());
+
+        for (int i = 0; i < eventChapterSpinner.getCount(); i++) {
+            String item = (String) eventChapterSpinner.getItemAtPosition(i);
+            if (item.equals(currentEvent.getChapter())) {
+                eventChapterSpinner.setSelection(i);
+                break;
+            }
+        }
+
+        calendar = Calendar.getInstance();
+        calendar.setTime(currentEvent.getDate());
+
+        updateDateLabel();
+        updateTimeLabel();
+
+        List<Route> eventRouteList = currentEvent.getRoute();
+        for (Route route : eventRouteList) {
+            parseGeoPointList.add(route);
+        }
+        parseGeoPointListAdapter.notifyDataSetChanged();
     }
 
 }

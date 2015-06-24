@@ -1,5 +1,7 @@
 package com.id2p.mycarclub.model;
 
+import com.parse.DeleteCallback;
+import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -77,6 +79,27 @@ public class Event extends ParseObject {
         query.whereEqualTo("chapter", user.getChapter());
         List<Event> eventList = query.find();
         return eventList;
+    }
+
+    public static Event getEventById(String eventId) throws ParseException {
+        ParseQuery<Event> query = new ParseQuery<Event>("Event");
+        query.whereEqualTo("objectId", eventId);
+        return query.getFirst();
+    }
+
+    public static void getEventByIdInBackGround(String eventId, GetCallback<Event> callback) {
+        ParseQuery<Event> query = ParseQuery.getQuery("Event");
+        query.include("route");
+        query.getInBackground(eventId, callback);
+    }
+
+    public static void deleteEventInBackGround(Event event, DeleteCallback callback) {
+        List<Route> routeList = event.getRoute();
+        for (Route route : routeList) {
+            route.deleteEventually();
+        }
+
+        event.deleteInBackground(callback);
     }
 
 }
