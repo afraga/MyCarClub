@@ -51,6 +51,20 @@ public class EventListActivity extends BaseDrawerActivity  {
         headerText = (TextView) header.findViewById(R.id.txtHeader);
 
         eventsListView.addHeaderView(header);
+        eventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                int clickedPosition = i;
+                if (eventsListView.getHeaderViewsCount() > 0 && clickedPosition > 0) {
+                    clickedPosition--; // subtracted header
+                    Event clickedEvent = adapter.getItem(clickedPosition);
+                    Intent eventDetailIntent = new Intent(getApplicationContext(), EventDetailActivity.class);
+                    eventDetailIntent.putExtra("eventId", clickedEvent.getObjectId());
+//                    Toast.makeText(view.getContext(), "Clicked on: " + clickedEvent.getName(), Toast.LENGTH_LONG).show();
+                    startActivity(eventDetailIntent);
+                }
+            }
+        });
         eventsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -106,7 +120,7 @@ public class EventListActivity extends BaseDrawerActivity  {
             //set message, title, and icon
 //            .setTitle("Delete")
             .setMessage("Delete " + event.getName() + "?")
-            .setIcon(R.drawable.com_facebook_close)
+//            .setIcon(R.drawable.com_facebook_close)
             .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
                     final ProgressDialog progress = new ProgressDialog(EventListActivity.this);

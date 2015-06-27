@@ -13,7 +13,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -23,7 +23,7 @@
 
         <activity
             android:name=".view.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -69,8 +69,8 @@
         <activity
             android:name=".view.ProfileActivity"
             android:label="@string/title_activity_profile"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".view.BaseDrawerActivity">
+            android:parentActivityName=".view.BaseDrawerActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
@@ -78,8 +78,8 @@
         <activity
             android:name=".view.EventCreationActivity"
             android:label="@string/title_activity_event_creation"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".view.BaseDrawerActivity">
+            android:parentActivityName=".view.BaseDrawerActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
@@ -87,8 +87,8 @@
         <activity
             android:name=".view.AdCreationActivity"
             android:label="@string/title_activity_ad_creation"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".view.BaseDrawerActivity">
+            android:parentActivityName=".view.BaseDrawerActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
@@ -96,8 +96,8 @@
         <activity
             android:name=".view.GarageCreationActivity"
             android:label="@string/title_activity_garage_creation"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".view.BaseDrawerActivity">
+            android:parentActivityName=".view.BaseDrawerActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
@@ -105,8 +105,8 @@
         <activity
             android:name=".view.GarageViewActivity"
             android:label="@string/title_activity_garage_view"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".view.BaseDrawerActivity">
+            android:parentActivityName=".view.BaseDrawerActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
@@ -114,13 +114,20 @@
         <activity
             android:name=".view.EventListActivity"
             android:label="@string/title_activity_event_list"
-            android:windowSoftInputMode="adjustPan"
-            android:parentActivityName=".view.BaseDrawerActivity">
+            android:parentActivityName=".view.BaseDrawerActivity"
+            android:windowSoftInputMode="adjustPan" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
         </activity>
-
+        <activity
+            android:name=".view.EventDetailActivity"
+            android:label="@string/title_activity_event_detail"
+            android:parentActivityName=".view.BaseDrawerActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.id2p.mycarclub.view.BaseDrawerActivity" />
+        </activity>
     </application>
 
 </manifest>

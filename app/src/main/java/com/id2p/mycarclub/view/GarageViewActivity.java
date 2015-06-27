@@ -27,37 +27,31 @@ public class GarageViewActivity extends BaseDrawerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_garage_view);
 
         parseUser = ParseUser.getCurrentUser();
-        if (parseUser == null) {
-            ParseLoginBuilder builder = new ParseLoginBuilder(GarageViewActivity.this);
-            startActivityForResult(builder.build(), 0);
-
-            currentUser = new User();
-        } else {
-
-            // load our logged in user
-            currentUser = getLoggedUser();
-
-            setContentView(R.layout.activity_garage_view);
-
-            mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
-            mRecyclerView.setHasFixedSize(true);
-
-            mLayoutManager = new LinearLayoutManager(this);
-            mRecyclerView.setLayoutManager(mLayoutManager);
-
-            try {
-                mAdapter = new GarageCardAdapter(currentUser);
-                mRecyclerView.setAdapter(mAdapter);
-            } catch (ParseException e) {
-                e.printStackTrace();
-                finish();
-            }
-
-            super.onCreateDrawer(currentUser);
+        try {
+            currentUser = User.getUser(parseUser);
+        } catch (ParseException e) {
+            Toast.makeText(this, "Unable to get user login information. Please try later! ", Toast.LENGTH_LONG).show();
+            finish();
         }
 
+        mRecyclerView = (RecyclerView)findViewById(R.id.recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        try {
+            mAdapter = new GarageCardAdapter(currentUser);
+            mRecyclerView.setAdapter(mAdapter);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            finish();
+        }
+
+        super.onCreateDrawer(currentUser);
     }
 
     private User getLoggedUser() {
