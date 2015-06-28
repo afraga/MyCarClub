@@ -32,6 +32,7 @@ import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Event;
 import com.id2p.mycarclub.model.Route;
 import com.id2p.mycarclub.model.User;
+import com.id2p.mycarclub.utils.adapter.EventLocationAdapter;
 import com.id2p.mycarclub.utils.adapter.PlaceArrayAdapter;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -140,7 +141,7 @@ public class EventCreationActivity extends BaseDrawerActivity
         placeArrayAdapter = new PlaceArrayAdapter(this, android.R.layout.simple_list_item_1, BOUNDS_NORTH_AMERICA, null);
         addressText.setAdapter(placeArrayAdapter);
 
-        parseGeoPointListAdapter = new ArrayAdapter<Route>(getApplicationContext(), android.R.layout.simple_list_item_1, parseGeoPointList);
+        parseGeoPointListAdapter = new EventLocationAdapter(this, parseGeoPointList);
         routeList.setAdapter(parseGeoPointListAdapter);
 
         // set click listeners
