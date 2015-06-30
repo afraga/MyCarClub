@@ -203,7 +203,7 @@ public class EventCreationActivity extends BaseDrawerActivity
 
     private boolean addNewRouteToList() {
         Log.i(LOG_TAG, "Asking to add New Route: " + lastClickedLocation.getAddress() + " with distance: " + lastClickedLocation.getDistanceInKm());
-        if (!parseGeoPointList.contains(lastClickedLocation) && (lastClickedLocation.getDistanceInKm() > 0 || lastClickedLocation.getDistanceInKm() == -1)) {
+        if (lastClickedLocation != null && !parseGeoPointList.contains(lastClickedLocation) && (lastClickedLocation.getDistanceInKm() > 0 || lastClickedLocation.getDistanceInKm() == -1)) {
             Log.i(LOG_TAG, "New Route Added: " + lastClickedLocation.getAddress());
             parseGeoPointList.add(lastClickedLocation);
             parseGeoPointListAdapter.notifyDataSetChanged();
