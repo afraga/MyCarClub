@@ -6,7 +6,7 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:src="@drawable/ic_map_point_dark"
+        android:src="@drawable/ic_map_point_light"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:singleLine="false"
         android:layout_gravity="center"
-        android:textColor="@color/primary_material_dark"
+        android:textColor="@color/primary_material_light"
         android:textStyle="italic"
         android:paddingStart="4dp"
         android:hint="Route"/>
