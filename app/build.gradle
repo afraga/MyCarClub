@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
     defaultConfig {
@@ -32,4 +32,7 @@ dependencies {
     compile project(':ParseLoginUI')
     compile files('libs/Parse-1.9.1.jar')
     compile files('libs/ParseFacebookUtilsV4-1.9.1.jar')
+    compile('com.mikepenz:materialdrawer:3.0.8@aar') {
+        transitive = true
+    }
 }

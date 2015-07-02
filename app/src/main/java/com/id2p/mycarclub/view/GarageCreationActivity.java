@@ -3,14 +3,13 @@ package com.id2p.mycarclub.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
-
 import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Garage;
 import com.id2p.mycarclub.model.User;
@@ -26,19 +24,15 @@ import com.id2p.mycarclub.utils.ImageUtils;
 import com.id2p.mycarclub.utils.adapter.ImageAdapter;
 import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.ui.ParseLoginBuilder;
-
-import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GarageCreationActivity extends BaseDrawerActivity {
+public class GarageCreationActivity extends AppCompatActivity {
 
     private ParseUser parseUser = null;
     private User currentUser = null;
@@ -99,7 +93,6 @@ public class GarageCreationActivity extends BaseDrawerActivity {
             imageList = new ArrayList<ParseFile>();
         }
 
-        super.onCreateDrawer(currentUser);
     }
 
     private GridView.OnItemClickListener thumbsClickListener = new GridView.OnItemClickListener() {

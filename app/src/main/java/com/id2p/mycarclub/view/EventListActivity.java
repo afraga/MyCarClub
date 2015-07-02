@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,13 +23,12 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import java.util.ArrayList;
 
-public class EventListActivity extends BaseDrawerActivity  {
+public class EventListActivity extends AppCompatActivity {
 
     private ParseUser parseUser = null;
     private User currentUser = null;
     private ListView eventsListView = null;
     private EventsAdapter adapter = null;
-    private TextView headerText = null;
     private static int CONTEXT_EDIT_INDEX = 0;
     private static int CONTEXT_DELETE_INDEX = 1;
 
@@ -46,23 +46,13 @@ public class EventListActivity extends BaseDrawerActivity  {
         }
 
         eventsListView = (ListView) findViewById(R.id.eventsListView);
-
-        View header = (View)getLayoutInflater().inflate(R.layout.event_item_header, null);
-        headerText = (TextView) header.findViewById(R.id.txtHeader);
-
-        eventsListView.addHeaderView(header);
         eventsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                int clickedPosition = i;
-                if (eventsListView.getHeaderViewsCount() > 0 && clickedPosition > 0) {
-                    clickedPosition--; // subtracted header
-                    Event clickedEvent = adapter.getItem(clickedPosition);
-                    Intent eventDetailIntent = new Intent(getApplicationContext(), EventDetailActivity.class);
-                    eventDetailIntent.putExtra("eventId", clickedEvent.getObjectId());
-//                    Toast.makeText(view.getContext(), "Clicked on: " + clickedEvent.getName(), Toast.LENGTH_LONG).show();
-                    startActivity(eventDetailIntent);
-                }
+                Event clickedEvent = adapter.getItem(i);
+                Intent eventDetailIntent = new Intent(getApplicationContext(), EventDetailActivity.class);
+                eventDetailIntent.putExtra("eventId", clickedEvent.getObjectId());
+                startActivity(eventDetailIntent);
             }
         });
         eventsListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -72,8 +62,7 @@ public class EventListActivity extends BaseDrawerActivity  {
             }
         });
         registerForContextMenu(eventsListView);
-
-        headerText.setText("My Events");
+        getSupportActionBar().setTitle("My Events");
 
         try {
             adapter = new EventsAdapter(getApplicationContext(), (ArrayList)Event.getUserEvents(currentUser));
@@ -81,8 +70,6 @@ public class EventListActivity extends BaseDrawerActivity  {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-        super.onCreateDrawer(currentUser);
 
     }
 
@@ -101,13 +88,16 @@ public class EventListActivity extends BaseDrawerActivity  {
         Event selectedEvent = adapter.getItem(info.position-1);
         int menuItemIndex = item.getItemId();
 
+        if (selectedEvent.getOrganizer() != currentUser) {
+            Toast.makeText(this, "Cannot modify events not created by you.", Toast.LENGTH_LONG).show();
+            return true;
+        }
+
         if (menuItemIndex == CONTEXT_EDIT_INDEX) {
-            Toast.makeText(EventListActivity.this, "Edit: " + selectedEvent.getName(), Toast.LENGTH_SHORT).show();
             Intent eventIntent = new Intent(getApplicationContext(), EventCreationActivity.class);
             eventIntent.putExtra("eventId", selectedEvent.getObjectId());
             startActivity(eventIntent);
         } else if (menuItemIndex == CONTEXT_DELETE_INDEX) {
-            Toast.makeText(EventListActivity.this, "Delete: " + selectedEvent.getName(), Toast.LENGTH_SHORT).show();
             AlertDialog diaBox = AskDeleteEvent(selectedEvent);
             diaBox.show();
         }
@@ -165,7 +155,7 @@ public class EventListActivity extends BaseDrawerActivity  {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_user_events) {
             try {
-                if (headerText != null) headerText.setText("My Events");
+                getSupportActionBar().setTitle("My Events");
                 adapter = new EventsAdapter(getApplicationContext(), (ArrayList)Event.getUserEvents(currentUser));
                 eventsListView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -174,7 +164,7 @@ public class EventListActivity extends BaseDrawerActivity  {
             }
         } else if (id == R.id.action_chapter_events) {
             try {
-                if (headerText != null) headerText.setText("My Chapter Events");
+                getSupportActionBar().setTitle("My Chapter Events");
                 adapter = new EventsAdapter(getApplicationContext(), (ArrayList)Event.getChapterEvents(currentUser));
                 eventsListView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();

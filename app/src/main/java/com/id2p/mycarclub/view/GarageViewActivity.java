@@ -2,21 +2,19 @@ package com.id2p.mycarclub.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 import com.id2p.mycarclub.R;
-import com.id2p.mycarclub.model.Garage;
 import com.id2p.mycarclub.model.User;
 import com.id2p.mycarclub.utils.adapter.GarageCardAdapter;
 import com.parse.ParseException;
 import com.parse.ParseUser;
-import com.parse.ui.ParseLoginBuilder;
 
-public class GarageViewActivity extends BaseDrawerActivity {
+public class GarageViewActivity extends AppCompatActivity {
 
     private ParseUser parseUser = null;
     private User currentUser = null;
@@ -50,8 +48,6 @@ public class GarageViewActivity extends BaseDrawerActivity {
             e.printStackTrace();
             finish();
         }
-
-        super.onCreateDrawer(currentUser);
     }
 
     private User getLoggedUser() {

@@ -2,14 +2,13 @@ package com.id2p.mycarclub.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -41,18 +40,15 @@ import com.id2p.mycarclub.utils.adapter.PlaceArrayAdapter;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
-import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
-import com.parse.ui.ParseLoginBuilder;
-import java.io.ByteArrayOutputStream;
 import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
+public class AdCreationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks {
 
     private ParseUser parseUser = null;
     private User currentUser = null;
@@ -131,8 +127,6 @@ public class AdCreationActivity extends BaseDrawerActivity implements GoogleApiC
 
         adThumbnailList = new ArrayList<ParseFile>();
         adImageList = new ArrayList<ParseFile>();
-
-        super.onCreateDrawer(currentUser);
 
     }
 

@@ -2,6 +2,7 @@ package com.id2p.mycarclub.view;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class EventDetailActivity extends BaseDrawerActivity {
+public class EventDetailActivity extends AppCompatActivity {
 
     private ParseUser parseUser = null;
     private User currentUser = null;
@@ -85,7 +86,6 @@ public class EventDetailActivity extends BaseDrawerActivity {
             finish();
         }
 
-        super.onCreateDrawer(currentUser);
     }
 
     private void loadEventData() {

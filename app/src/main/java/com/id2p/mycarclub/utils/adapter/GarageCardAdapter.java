@@ -84,7 +84,6 @@ public class GarageCardAdapter extends RecyclerView.Adapter<GarageCardAdapter.Vi
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(view.getContext(), "position = " + mItems.get(getPosition()).getCarModel(), Toast.LENGTH_SHORT).show();
             Garage item = mItems.get(getPosition());
             if (currentUser == item.getOwner()) {
                 // owner, edit item

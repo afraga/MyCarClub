@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
@@ -48,7 +49,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class EventCreationActivity extends BaseDrawerActivity
+public class EventCreationActivity extends AppCompatActivity
         implements View.OnClickListener, AdapterView.OnItemClickListener, GoogleApiClient.OnConnectionFailedListener,
         GoogleApiClient.ConnectionCallbacks {
 
@@ -176,8 +177,6 @@ public class EventCreationActivity extends BaseDrawerActivity
         } else {
             currentEvent = new Event();
         }
-
-        super.onCreateDrawer(currentUser);
     }
 
     @Override
