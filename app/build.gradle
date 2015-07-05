@@ -35,4 +35,5 @@ dependencies {
     compile('com.mikepenz:materialdrawer:3.0.8@aar') {
         transitive = true
     }
+    compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
 }

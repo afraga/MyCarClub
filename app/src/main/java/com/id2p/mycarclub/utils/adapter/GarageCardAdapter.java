@@ -10,8 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.id2p.mycarclub.R;
 import com.id2p.mycarclub.model.Garage;
 import com.id2p.mycarclub.model.User;
@@ -19,13 +17,8 @@ import com.id2p.mycarclub.view.GarageCreationActivity;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseImageView;
-
 import java.util.List;
 
-
-/**
- * Created by Edwin on 18/01/2015.
- */
 
 public class GarageCardAdapter extends RecyclerView.Adapter<GarageCardAdapter.ViewHolder> {
 

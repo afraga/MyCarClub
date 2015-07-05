@@ -10,6 +10,9 @@
         <item name="colorPrimary">#FF3333</item>
         <item name="colorPrimaryDark">#FF0000</item>
         <item name="colorAccent">#02A8F3</item>
+
+        <!-- Sliding Tab Indicator -->
+        <item name="pstsIndicatorColor">#FF0000</item>
     </style>
 
     <style name="FerrariDrawerTheme" parent="MaterialDrawerTheme.TranslucentStatus">
@@ -39,6 +42,9 @@
         <item name="colorPrimary">#F1433C</item>
         <item name="colorPrimaryDark">#ffdc403a</item>
         <item name="colorAccent">#02A8F3</item>
+
+        <!-- Sliding Tab Indicator -->
+        <item name="pstsIndicatorColor">#ffdc403a</item>
     </style>
 
     <style name="PorscheDrawerTheme" parent="MaterialDrawerTheme.TranslucentStatus">
@@ -70,6 +76,9 @@
         <item name="colorPrimary">#F1433C</item>
         <item name="colorPrimaryDark">#ffdc403a</item>
         <item name="colorAccent">#02A8F3</item>
+
+        <!-- Sliding Tab Indicator -->
+        <item name="pstsIndicatorColor">#ffdc403a</item>
     </style>
 
     <style name="LamboDrawerTheme" parent="MaterialDrawerTheme.TranslucentStatus">

@@ -5,7 +5,6 @@ import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-
 import java.util.List;
 
 /**
@@ -35,23 +34,35 @@ public class EventRegistration extends ParseObject {
     }
 
     public static void getNumberOfRegistrationsInBackGround(Event event, CountCallback callback) {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("EventRegistration");
+        ParseQuery<EventRegistration> query = ParseQuery.getQuery("EventRegistration");
         query.whereEqualTo("event", event);
         query.countInBackground(callback);
     }
 
+    public static int getNumberOfRegistrations(Event event) throws ParseException {
+        ParseQuery<EventRegistration> query = ParseQuery.getQuery("EventRegistration");
+        query.whereEqualTo("event", event);
+        return query.count();
+    }
+
     public static boolean isUserRegistered(Event event, User user) throws ParseException {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("EventRegistration");
+        ParseQuery<EventRegistration> query = ParseQuery.getQuery("EventRegistration");
         query.whereEqualTo("event", event);
         query.whereEqualTo("user", user);
         return (query.count() > 0);
     }
 
     public static EventRegistration getRegistration(Event event, User user) throws ParseException {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("EventRegistration");
+        ParseQuery<EventRegistration> query = ParseQuery.getQuery("EventRegistration");
         query.whereEqualTo("event", event);
         query.whereEqualTo("user", user);
-        return (EventRegistration) query.getFirst();
+        return query.getFirst();
+    }
+
+    public static List<EventRegistration> getUserEventRegistrations(User user) throws ParseException {
+        ParseQuery<EventRegistration> query = ParseQuery.getQuery("EventRegistration");
+        query.whereEqualTo("user", user);
+        return query.find();
     }
 
 }

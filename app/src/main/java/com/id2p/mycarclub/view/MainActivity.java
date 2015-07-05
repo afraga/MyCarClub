@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                                 intent = new Intent(MainActivity.this, EventCreationActivity.class);
                                 break;
                             case EVENT_LIST_ACTION:
-                                intent = new Intent(MainActivity.this, EventListActivity.class);
+                                intent = new Intent(MainActivity.this, EventActivity.class);
                                 break;
                             case GARAGE_LIST_ACTION:
                                 intent = new Intent(MainActivity.this, GarageViewActivity.class);

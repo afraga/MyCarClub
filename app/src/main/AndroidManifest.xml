@@ -24,9 +24,10 @@
         <activity
             android:name=".view.MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/LamboDrawerTheme">
+            android:theme="@style/LamboDrawerTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,52 +35,54 @@
             android:name=".view.ProfileActivity"
             android:label="@string/title_activity_profile"
             android:parentActivityName=".view.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/LamboAppTheme"/>
+            android:theme="@style/LamboAppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.GarageCreationActivity"
             android:label="@string/title_activity_garage_creation"
             android:parentActivityName=".view.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/LamboAppTheme"/>
+            android:theme="@style/LamboAppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.GarageViewActivity"
             android:label="@string/title_activity_garage_view"
             android:parentActivityName=".view.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/LamboAppTheme"/>
+            android:theme="@style/LamboAppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.AdCreationActivity"
             android:label="@string/title_activity_ad_creation"
             android:parentActivityName=".view.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/LamboAppTheme"/>
+            android:theme="@style/LamboAppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.EventCreationActivity"
             android:label="@string/title_activity_event_creation"
             android:parentActivityName=".view.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/LamboAppTheme"/>
+            android:theme="@style/LamboAppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.EventListActivity"
             android:label="@string/title_activity_event_list"
             android:parentActivityName=".view.MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/LamboAppTheme"/>
+            android:theme="@style/LamboAppTheme"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".view.EventDetailActivity"
             android:label="@string/title_activity_event_detail"
             android:parentActivityName=".view.MainActivity"
-            android:theme="@style/LamboAppTheme"/>
-
-
-
+            android:theme="@style/LamboAppTheme" />
+        <activity
+            android:name=".view.EventActivity"
+            android:label="@string/title_activity_event"
+            android:parentActivityName=".view.MainActivity"
+            android:theme="@style/LamboAppTheme" />
 
         <activity
             android:name="com.parse.ui.ParseLoginActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:theme="@style/LamboAppTheme">
+            android:theme="@style/LamboAppTheme" >
             <meta-data
                 android:name="com.parse.ui.ParseLoginActivity.APP_LOGO"
                 android:resource="@drawable/porsche_small" />
@@ -101,6 +104,7 @@
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+
         <meta-data
             android:name="com.parse.APPLICATION_ID"
             android:value="@string/parse_app_id" />
@@ -110,7 +114,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
 
     </application>
 
