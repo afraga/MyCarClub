@@ -10,18 +10,22 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import com.id2p.mycarclub.R;
+import com.id2p.mycarclub.model.Event;
 import com.id2p.mycarclub.model.User;
 import com.id2p.mycarclub.utils.adapter.EventsCardAdapter;
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 public class EventsTabFragment extends Fragment {
 
     private static final int EVENTS_COMING_UP = 0;
-    private static final int EVENTS_USER_REGISTERED = 1;
-    private static final int EVENTS_CREATED_BY_USER = 2;
-    private static final int EVENTS_SAME_USER_CHAPTER = 3;
-    private static final int EVENTS_USER_PARTICIPATED = 4;
+    private static final int EVENTS_CREATED_BY_USER = 1;
+//    private static final int EVENTS_USER_REGISTERED = 2;
+//    private static final int EVENTS_SAME_USER_CHAPTER = 3;
+//    private static final int EVENTS_USER_PARTICIPATED = 4;
     private static final String EVENT_LIST_TYPE = "eventListType";
     private int mEventListType = 0;
     private ParseUser parseUser = null;
@@ -69,7 +73,22 @@ public class EventsTabFragment extends Fragment {
             mLayoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(mLayoutManager);
 
-            mAdapter = new EventsCardAdapter(mEventListType, currentUser);
+//            if (mEventListType == EVENTS_COMING_UP) {
+//                mAdapter = new EventsCardAdapter(mEventListType, currentUser, new FindCallback<Event>() {
+//                    @Override
+//                    public void done(List<Event> list, ParseException e) {
+//                        if (e == null) {
+//                            ((EventsCardAdapter) mAdapter).setEventsList(list);
+//                            mAdapter.notifyDataSetChanged();
+//                        } else {
+//                            // TODO: load some fragment saying objects could not be loaded
+////                            objectRetrievalFailed();
+//                        }
+//                    }
+//                });
+//            } else {
+                mAdapter = new EventsCardAdapter(mEventListType, currentUser, null);
+//            }
             mRecyclerView.setAdapter(mAdapter);
             mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 

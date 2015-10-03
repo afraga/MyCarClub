@@ -8,6 +8,7 @@ import com.id2p.mycarclub.model.Ad;
 import com.id2p.mycarclub.model.Event;
 import com.id2p.mycarclub.model.EventRegistration;
 import com.id2p.mycarclub.model.Garage;
+import com.id2p.mycarclub.model.InProgressRoute;
 import com.id2p.mycarclub.model.Route;
 import com.id2p.mycarclub.model.User;
 import com.parse.Parse;
@@ -34,6 +35,7 @@ public class MyCarClubApplication extends Application {
         ParseObject.registerSubclass(Route.class);
         ParseObject.registerSubclass(Ad.class);
         ParseObject.registerSubclass(Garage.class);
+        ParseObject.registerSubclass(InProgressRoute.class);
 
         // Enable Local Datastore
         Parse.enableLocalDatastore(this);

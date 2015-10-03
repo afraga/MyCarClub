@@ -12,7 +12,10 @@ import com.id2p.mycarclub.model.EventRegistration;
 import com.id2p.mycarclub.model.Route;
 import com.id2p.mycarclub.model.User;
 import com.id2p.mycarclub.view.EventDetailActivity;
+import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -23,34 +26,35 @@ import java.util.Locale;
  */
 public class EventsCardAdapter extends RecyclerView.Adapter<EventsCardAdapter.ViewHolder> {
     private static final int EVENTS_COMING_UP = 0;
-    private static final int EVENTS_USER_REGISTERED = 1;
-    private static final int EVENTS_CREATED_BY_USER = 2;
-    private static final int EVENTS_SAME_USER_CHAPTER = 3;
-    private static final int EVENTS_USER_PARTICIPATED = 4;
+    private static final int EVENTS_CREATED_BY_USER = 1;
+//    private static final int EVENTS_USER_REGISTERED = 2;
+//    private static final int EVENTS_SAME_USER_CHAPTER = 3;
+//    private static final int EVENTS_USER_PARTICIPATED = 4;
     List<Event> mItems = null;
     User currentUser = null;
 
-    public EventsCardAdapter(int EventListType, User user) throws ParseException {
+    public EventsCardAdapter(int EventListType, User user, FindCallback<Event> callback) throws ParseException {
         super();
 
         currentUser = user;
         switch(EventListType) {
             case EVENTS_COMING_UP:
                 mItems = Event.getEventsComingUp();
+//                Event.getEventsComingUpInBackground(callback);
                 break;
             case EVENTS_CREATED_BY_USER:
                 mItems = Event.getUserEvents(currentUser);
                 break;
-            case EVENTS_USER_REGISTERED:
-                mItems = Event.getEventsUserRegistered(currentUser);
-                break;
-            case EVENTS_SAME_USER_CHAPTER:
-                mItems = Event.getChapterEvents(currentUser);
-                break;
-            case EVENTS_USER_PARTICIPATED:
-                // TODO: this will be a list of events user Checked In! Not yet implemented.
-                mItems = Event.getEventsUserRegistered(currentUser);
-                break;
+//            case EVENTS_USER_REGISTERED:
+//                mItems = Event.getEventsUserRegistered(currentUser);
+//                break;
+//            case EVENTS_SAME_USER_CHAPTER:
+//                mItems = Event.getChapterEvents(currentUser);
+//                break;
+//            case EVENTS_USER_PARTICIPATED:
+//                // TODO: this will be a list of events user Checked In! Not yet implemented.
+//                mItems = Event.getEventsUserRegistered(currentUser);
+//                break;
         }
     }
 
@@ -94,7 +98,13 @@ public class EventsCardAdapter extends RecyclerView.Adapter<EventsCardAdapter.Vi
 
     @Override
     public int getItemCount() {
+        if (mItems == null)
+            return 0;
         return mItems.size();
+    }
+
+    public void setEventsList(List<Event> eventlist) {
+        mItems = eventlist;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

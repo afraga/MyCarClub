@@ -1,6 +1,7 @@
 package com.id2p.mycarclub.view;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -22,7 +23,9 @@ import com.parse.SaveCallback;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class EventDetailActivity extends AppCompatActivity {
 
@@ -96,6 +99,18 @@ public class EventDetailActivity extends AppCompatActivity {
         calendar = Calendar.getInstance();
         calendar.setTime(currentEvent.getDate());
 
+        Date now = new Date();
+        int diffInMins = (int)( (calendar.getTime().getTime() - now.getTime()) / (1000 * 60) );
+
+        // TODO: only show checkin if within 2 hours from start
+        if (diffInMins <= 120) {
+            // users can checking to event at least 2 hours before event
+            eventMenu.getItem(2).setVisible(true);
+        } else {
+            // hide checkin button until it is time for event
+            eventMenu.getItem(2).setVisible(true);
+        }
+
         updateDateLabel();
         updateTimeLabel();
 
@@ -103,6 +118,14 @@ public class EventDetailActivity extends AppCompatActivity {
 
         adapter = new EventLocationAdapter(getApplicationContext(), (ArrayList)currentEvent.getRoute());
         eventRouteList.setAdapter(adapter);
+
+        if (currentEvent.getOrganizer() == currentUser) {
+            eventMenu.getItem(3).setEnabled(true);
+            eventMenu.getItem(3).setVisible(true);
+        } else {
+            eventMenu.getItem(3).setEnabled(false);
+            eventMenu.getItem(3).setVisible(false);
+        }
     }
 
     private void loadRegistrationData() {
@@ -154,6 +177,14 @@ public class EventDetailActivity extends AppCompatActivity {
             registerForEvent();
         } else if (id == R.id.action_unregister) {
             unregisterFromEvent();
+        } else if (id == R.id.action_edit) {
+            Intent eventEditIntent = new Intent(EventDetailActivity.this, EventCreationActivity.class);
+            eventEditIntent.putExtra("eventId", currentEvent.getObjectId());
+            startActivity(eventEditIntent);
+        } else if (id == R.id.action_map_view) {
+            Intent mapViewIntent = new Intent(EventDetailActivity.this, MapViewActivity.class);
+            mapViewIntent.putExtra("eventId", currentEvent.getObjectId());
+            startActivity(mapViewIntent);
         }
 
         return super.onOptionsItemSelected(item);

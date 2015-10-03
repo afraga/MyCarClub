@@ -1,6 +1,7 @@
 package com.id2p.mycarclub.model;
 
 import com.parse.DeleteCallback;
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
@@ -96,6 +97,19 @@ public class Event extends ParseObject {
         query.whereLessThan("date", endDate);
         List<Event> eventList = query.find();
         return eventList;
+    }
+
+    public static void getEventsComingUpInBackground(FindCallback<Event> callback) {
+        // we will define coming up as in the next 30 days
+        Calendar calendar = Calendar.getInstance();
+        Date today = calendar.getTime();
+        calendar.add(Calendar.DATE, 30);
+        Date endDate = calendar.getTime();
+
+        ParseQuery<Event> query = new ParseQuery("Event");
+        query.whereGreaterThan("date", today);
+        query.whereLessThan("date", endDate);
+        query.findInBackground(callback);
     }
 
     // TODO: experiment with doing in background later

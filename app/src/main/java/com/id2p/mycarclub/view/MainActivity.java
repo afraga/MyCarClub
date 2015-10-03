@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName("Friends List").withIcon(FontAwesome.Icon.faw_users),
                         new SectionDrawerItem().withName("Event"),
                         new PrimaryDrawerItem().withName("View Events").withIcon(FontAwesome.Icon.faw_book).withIdentifier(EVENT_LIST_ACTION),
-                        new PrimaryDrawerItem().withName("Crete Event").withIcon(FontAwesome.Icon.faw_plus).withIdentifier(EVENT_CREATE_ACTION),
+                        new PrimaryDrawerItem().withName("Create Event").withIcon(FontAwesome.Icon.faw_plus).withIdentifier(EVENT_CREATE_ACTION),
                         new SectionDrawerItem().withName("Garage"),
                         new PrimaryDrawerItem().withName("My Garage").withIcon(FontAwesome.Icon.faw_car).withIdentifier(GARAGE_LIST_ACTION),
                         new PrimaryDrawerItem().withName("Friend's Garage").withIcon(FontAwesome.Icon.faw_car),
